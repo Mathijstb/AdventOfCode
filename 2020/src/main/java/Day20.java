@@ -1,10 +1,11 @@
+import fileUtils.FileReader;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Value;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Day20 {

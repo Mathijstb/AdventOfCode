@@ -1,6 +1,9 @@
-import lombok.*;
+import fileUtils.FileReader;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,9 +28,13 @@ public class Day8 {
     private static class Instruction {
         @NonNull
         Operation operation;
-        @NonNull
         int value;
         boolean executed = false;
+
+        public Instruction(@NonNull Operation operation, int value) {
+            this.operation = operation;
+            this.value = value;
+        }
     }
 
     public static void execute() {

@@ -1,3 +1,5 @@
+import fileUtils.FileReader;
+
 import java.util.List;
 
 public class Day20 {

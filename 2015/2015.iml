@@ -8,7 +8,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="utility" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -22,5 +21,6 @@
     <orderEntry type="library" name="Maven: com.google.guava:guava:30.1-jre" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.11" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:30.0-jre" level="project" />
+    <orderEntry type="module" module-name="utility" />
   </component>
 </module>

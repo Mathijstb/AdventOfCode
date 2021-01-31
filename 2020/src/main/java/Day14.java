@@ -1,11 +1,10 @@
+import fileUtils.FileReader;
 import lombok.Data;
 import lombok.Value;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Day14 {
