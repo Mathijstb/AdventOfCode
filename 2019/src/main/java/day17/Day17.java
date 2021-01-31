@@ -1,5 +1,6 @@
 package day17;
 
+import com.google.common.collect.Lists;
 import drawUtils.DrawGrid;
 import drawUtils.Images;
 import fileUtils.FileReader;
@@ -17,20 +18,79 @@ public class Day17 {
         List<String> lines = FileReader.getFileReader().readFile("input17.csv");
         String line = lines.stream().findFirst().orElseThrow();
         List<String> numbers = Arrays.stream(line.split(",")).collect(Collectors.toList());
-        executeProgram(numbers);
+        try {
+            executeProgram(numbers);
+        }
+        catch (InterruptedException ex) {
+            throw new RuntimeException("Interrupted!");
+        }
     }
 
-    private static void executeProgram(List<String> numbers) {
+    private static void executeProgram(List<String> numbers) throws InterruptedException {
         IntCodeComputer.start(numbers);
-        initializeGrid();
-        findCrossings();
+
+        List<Long> mainInput = Lists.newArrayList(65L, 44L, 66L, 44L, 65L, 44L, 67L, 44L, 66L, 44L, 67L, 44L, 66L, 44L, 65L, 44L, 67L, 44L, 66L, 10L);
+        List<Long> function1 = Lists.newArrayList(76L, 44L, 49L, 48L, 44L, 76L, 44L, 54L, 44L, 82L, 44L, 49L, 48L, 10L);
+        List<Long> function2 = Lists.newArrayList(82L, 44L, 54L, 44L, 82L, 44L, 56L, 44L, 82L, 44L, 56L, 44L, 76L, 44L, 54L, 44L, 82L, 44L, 56L, 10L);
+        List<Long> function3 = Lists.newArrayList(76L, 44L, 49L, 48L, 44L, 82L, 44L, 56L, 44L, 82L, 44L, 56L, 44L, 76L, 44L, 49L, 48L, 10L);
+        List<Long> wantVideoFeed = Lists.newArrayList(121L, 10L);//Lists.newArrayList(110L, 10L);
+        mainInput.forEach(IntCodeComputer::addInput);
+        function1.forEach(IntCodeComputer::addInput);
+        function2.forEach(IntCodeComputer::addInput);
+        function3.forEach(IntCodeComputer::addInput);
+        wantVideoFeed.forEach(IntCodeComputer::addInput);
+
+        initializePointMap(getVideoFeed());
         drawGrid();
-        findSumOfAlignmentParameters();
+        processInput();
+
+        while (!IntCodeComputer.isFinished() || IntCodeComputer.getOutputSize() > 2) {
+            synchronized (Thread.currentThread()) {
+                Thread.currentThread().wait(1);
+            }
+            initializePointMap(getVideoFeed());
+            findCrossings();
+            drawGrid.repaint();
+        }
+
+        State lastState = getNextState().orElseThrow();
+        System.out.println("Result: " + lastState.otherValue);
     }
 
-    private static final List<List<State>> grid = new ArrayList<>();
+    private static List<State> getVideoFeed() {
+        State previousState = State.EMPTY;
+        List<State> videoFeed = new ArrayList<>();
+        while (true) {
+            State state = getNextState().orElseThrow();
+            if(state == State.NEWLINE && previousState == State.NEWLINE) break;
+            videoFeed.add(state);
+            previousState = state;
+        }
+        return videoFeed;
+    }
+
+    private static void processInput() {
+        State previousState = State.EMPTY;
+        StringBuilder sb = new StringBuilder();
+        while (true) {
+            State state = getNextTextState().orElseThrow();
+            if(state == State.NEWLINE) {
+                String string = sb.toString();
+                sb = new StringBuilder();
+                System.out.println(string);
+                if (previousState == State.NEWLINE) break;
+            }
+            else {
+                sb.append((char) state.otherValue);
+            }
+            previousState = state;
+        }
+    }
+
+    private static List<List<State>> grid;
     private static final Map<Point, State> pointMap = new HashMap<>();
     private static Set<Point> crossings;
+    private static DrawGrid<State> drawGrid;
 
     private static void findCrossings() {
         crossings = pointMap.keySet().stream().filter(Day17::isCrossing).collect(Collectors.toSet());
@@ -59,15 +119,8 @@ public class Day17 {
     }
 
     private static void drawGrid() {
-//        for (List<State> row: grid) {
-//            StringBuilder sb = new StringBuilder();
-//            for (State state: row) {
-//                sb.append(state.toCharacter());
-//            }
-//            System.out.println(sb.toString());
-//        }
         Map<State, Consumer<DrawGrid.DrawParameters>> paintMap = new HashMap<>();
-        paintMap.put(State.SCAFFOLD, (dp) -> dp.getG2d().drawImage(Images.getImage("wall.png"), dp.getPoint().x, dp.getPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
+        paintMap.put(State.SCAFFOLD, (dp) -> dp.getG2d().drawImage(Images.getImage("dot.png"), dp.getPoint().x, dp.getPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
         paintMap.put(State.CROSSING, (dp) -> dp.getG2d().drawImage(Images.getImage("crossing.png"), dp.getPoint().x, dp.getPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
         paintMap.put(State.UP, (dp) -> dp.getG2d().drawImage(Images.getImage("arrowUp.png"), dp.getPoint().x, dp.getPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
         paintMap.put(State.DOWN, (dp) -> dp.getG2d().drawImage(Images.getImage("arrowDown.png"), dp.getPoint().x, dp.getPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
@@ -75,26 +128,20 @@ public class Day17 {
         paintMap.put(State.RIGHT, (dp) -> dp.getG2d().drawImage(Images.getImage("arrowRight.png"), dp.getPoint().x, dp.getPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
         paintMap.put(State.OFF, (dp) -> dp.getG2d().drawImage(Images.getImage("redCross.png"), dp.getPoint().x, dp.getPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
 
-        DrawGrid<State> grid = new DrawGrid<>("Scaffolds", State.class, pointMap, State.EMPTY, paintMap);
+        drawGrid = new DrawGrid<>("Scaffolds", State.class, pointMap, State.EMPTY, paintMap);
     }
 
-    private static void initializeGrid() {
+    private static void initializePointMap(List<State> input) {
+        grid = new ArrayList<>();
         List<State> row = new ArrayList<>();
         grid.add(row);
-        while(true) {
-            Optional<State> optionalState = getNextState();
-            if (optionalState.isEmpty()) {
-                break;
+        for (State state: input) {
+            if (state == State.NEWLINE) {
+                row = new ArrayList<>();
+                grid.add(row);
             }
             else {
-                State state = optionalState.get();
-                if (state == State.NEWLINE) {
-                    row = new ArrayList<>();
-                    grid.add(row);
-                }
-                else {
-                    row.add(state);
-                }
+                row.add(state);
             }
         }
         for (int i = 0; i < grid.size(); i++) {
@@ -104,6 +151,11 @@ public class Day17 {
                 pointMap.put(new Point(j, i), state);
             }
         }
+    }
+
+    private static Optional<State> getNextTextState() {
+        Optional<Long> optionalOutput = IntCodeComputer.getNextOutputValue();
+        return optionalOutput.isEmpty() ? Optional.empty() : Optional.of(State.fromTextValue(optionalOutput.get().intValue()));
     }
 
     private static Optional<State> getNextState() {

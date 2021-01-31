@@ -27,12 +27,18 @@ public class IntCodeComputer {
         return thread;
     }
 
+    private static boolean finished = false;
+
+    public static boolean isFinished() {
+        return finished;
+    }
+
     @AllArgsConstructor
     private static class ExecuteProgramTask implements Runnable {
 
         List<String> numbers;
-        private static LinkedBlockingDeque<Long> inputQueue = new LinkedBlockingDeque<>();
-        private static LinkedBlockingDeque<Long> outputQueue = new LinkedBlockingDeque<>();
+        private static final LinkedBlockingDeque<Long> inputQueue = new LinkedBlockingDeque<>();
+        private static final LinkedBlockingDeque<Long> outputQueue = new LinkedBlockingDeque<>();
 
         private static void addInput(long number) {
             inputQueue.add(number);
@@ -41,7 +47,7 @@ public class IntCodeComputer {
         private static Optional<Long> getNextOutputValue() {
             try {
                 Long output = outputQueue.takeFirst();
-                return output == 99L ? Optional.empty() : Optional.of(output);
+                return output == -9_999_999_999_999_999L ? Optional.empty() : Optional.of(output);
             }
             catch (InterruptedException e) {
                 throw new RuntimeException("Interrupted");
@@ -50,12 +56,14 @@ public class IntCodeComputer {
 
         @Override
         public void run() {
-            executeProgram(numbers, inputQueue, outputQueue);
-            outputQueue.add(99L);
+            finished = false;
+            executeProgram(numbers);
+            outputQueue.add(-9_999_999_999_999_999L);
+            finished = true;
         }
     }
 
-    private static long executeProgram(List<String> numbers, BlockingDeque<Long> inputQueue, BlockingDeque<Long> outputQueue) {
+    private static void executeProgram(List<String> numbers) {
         int index = 0;
         while (true) {
             String number = numbers.get(index);
@@ -63,11 +71,11 @@ public class IntCodeComputer {
             int opCode = getOpCode(number);
             int[] paramModes = getParamModes(number);
 
-            Optional<Integer> newIndex = executeOperation(numbers, inputQueue, outputQueue, opCode, paramModes, index);
+            Optional<Integer> newIndex = executeOperation(numbers, ExecuteProgramTask.inputQueue, ExecuteProgramTask.outputQueue, opCode, paramModes, index);
             if (newIndex.isEmpty()) break;
             index = newIndex.get();
         }
-        return lastOutput.get();
+        lastOutput.get();
     }
 
     private static final ThreadLocal<Long> base = ThreadLocal.withInitial(() -> 0L);

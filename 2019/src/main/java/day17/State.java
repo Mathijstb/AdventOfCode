@@ -1,5 +1,9 @@
 package day17;
 
+import com.google.common.collect.Sets;
+
+import java.util.Set;
+
 public enum State {
     NEWLINE,
     SCAFFOLD,
@@ -9,7 +13,12 @@ public enum State {
     RIGHT,
     OFF,
     UP,
-    DOWN;
+    DOWN,
+    OTHER;
+
+    public int otherValue;
+
+    public static Set<State> gridStates = Sets.newHashSet(NEWLINE, SCAFFOLD, EMPTY, CROSSING, LEFT, RIGHT, UP, DOWN);
 
     public static State fromValue(int value) {
         switch (value) {
@@ -21,8 +30,21 @@ public enum State {
             case 88: return OFF;
             case 94: return UP;
             case 118: return DOWN;
-            default: throw new IllegalArgumentException("Invalid value");
+            default: {
+                State state = OTHER;
+                state.otherValue = value;
+                return state;
+            }
         }
+    }
+
+    public static State fromTextValue(int value) {
+        if (value == 10) {
+            return NEWLINE;
+        }
+        State state = OTHER;
+        state.otherValue = value;
+        return state;
     }
 
     public Character toCharacter() {

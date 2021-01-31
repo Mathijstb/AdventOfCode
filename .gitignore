@@ -1,0 +1,12 @@
+/out/
+/target/
+.project
+.settings
+.classpath
+target
+*.versionsBackup
+*.iml
+.idea/*
+!.idea/codeStyleSettings.xml
+.DS_Store
+/.metadata/
