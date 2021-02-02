@@ -71,6 +71,7 @@ public class DrawGrid<T> {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             Graphics2D g2d = (Graphics2D) g.create();
+            g2d.setBackground(Color.WHITE);
             Grid<T> grid = new Grid<>(c, pointTypeMap, defaultValue);
             int stateSize = Math.max(grid.getHeight(), grid.getWidth());
 
@@ -81,45 +82,11 @@ public class DrawGrid<T> {
                     T pointType = row[j];
                     int x = j * blockSize;
                     int y = i * blockSize;
-                    //g2d.drawLine(0, 10, 1, 50);
                     if (paintMap.containsKey(pointType)) {
                         paintMap.get(pointType).accept(new DrawParameters(g2d, new Point(x, y), blockSize));
                     }
-
-                    // function: (Point, blockSize) ->
-
-                    // biConsumer: (g2d, Point) -> g2d.drawImage(
-                    // - Point,
-                    // - blockSize,
-                    // - image
-                    // - g2d
-                    // - function
-//                    switch (pointType) {
-//                        case UNEXPLORED:
-//                            continue;
-//                        case WALL: {
-//                            g2d.drawImage(wall, x, y, blockSize, blockSize, null);
-//                        }
-//                        break;
-//                        case EMPTY: {
-//                            g2d.drawImage(dot, x, y, blockSize, blockSize, null);
-//                        }
-//                        break;
-//                        case DROID: {
-//                            g2d.drawImage(droid, x, y, blockSize, blockSize, null);
-//                        }
-//                        break;
-//                        case OXYGEN: {
-//                            g2d.drawImage(oxygen, x, y, blockSize, blockSize, null);
-//                        }
-//                        break;
-//                        case GOAL: {
-//                            g2d.drawImage(goal, x, y, blockSize, blockSize, null);
-//                        }
-//                        break;
-                    }
                 }
             }
-
+        }
     }
 }
