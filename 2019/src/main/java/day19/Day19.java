@@ -86,10 +86,10 @@ public class Day19 {
 
     private static void drawGrid() {
         Map<Integer, Consumer<DrawGrid.DrawParameters>> paintMap = new HashMap<>();
-        paintMap.put(0, dp -> dp.getG2d().drawImage(Images.getImage("dot.png"), dp.getPoint().x, dp.getPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
-        paintMap.put(1, dp -> dp.getG2d().drawImage(Images.getImage("oxygen.png"), dp.getPoint().x, dp.getPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
-        paintMap.put(2, dp -> dp.getG2d().drawImage(Images.getImage("wall.png"), dp.getPoint().x, dp.getPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
-        DrawGrid<Integer> grid  = new DrawGrid<Integer>("Tractor Beam", Integer.class, beamMap, 0, paintMap);
+        paintMap.put(0, dp -> dp.getG2d().drawImage(Images.getImage("dot.png"), dp.getDrawPoint().x, dp.getDrawPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
+        paintMap.put(1, dp -> dp.getG2d().drawImage(Images.getImage("oxygen.png"), dp.getDrawPoint().x, dp.getDrawPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
+        paintMap.put(2, dp -> dp.getG2d().drawImage(Images.getImage("wall.png"), dp.getDrawPoint().x, dp.getDrawPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
+        DrawGrid<Integer> grid  = new DrawGrid<>("Tractor Beam", Integer.class, beamMap, 0, paintMap);
         System.out.println("Number of points affected: " + beamMap.values().stream().filter(v -> v == 1).count());
     }
 

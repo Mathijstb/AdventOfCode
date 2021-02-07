@@ -123,13 +123,13 @@ public class Day17 {
     private static void drawGrid() {
         if (paintMap == null) {
             paintMap = new HashMap<>();
-            paintMap.put(State.SCAFFOLD, (dp) -> dp.getG2d().drawImage(Images.getImage("dot.png"), dp.getPoint().x, dp.getPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
-            paintMap.put(State.CROSSING, (dp) -> dp.getG2d().drawImage(Images.getImage("crossing.png"), dp.getPoint().x, dp.getPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
-            paintMap.put(State.UP, (dp) -> dp.getG2d().drawImage(Images.getImage("arrowUp.png"), dp.getPoint().x, dp.getPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
-            paintMap.put(State.DOWN, (dp) -> dp.getG2d().drawImage(Images.getImage("arrowDown.png"), dp.getPoint().x, dp.getPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
-            paintMap.put(State.LEFT, (dp) -> dp.getG2d().drawImage(Images.getImage("arrowLeft.png"), dp.getPoint().x, dp.getPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
-            paintMap.put(State.RIGHT, (dp) -> dp.getG2d().drawImage(Images.getImage("arrowRight.png"), dp.getPoint().x, dp.getPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
-            paintMap.put(State.OFF, (dp) -> dp.getG2d().drawImage(Images.getImage("redCross.png"), dp.getPoint().x, dp.getPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
+            paintMap.put(State.SCAFFOLD, (dp) -> dp.getG2d().drawImage(Images.getImage("dot.png"), dp.getDrawPoint().x, dp.getDrawPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
+            paintMap.put(State.CROSSING, (dp) -> dp.getG2d().drawImage(Images.getImage("crossing.png"), dp.getDrawPoint().x, dp.getDrawPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
+            paintMap.put(State.UP, (dp) -> dp.getG2d().drawImage(Images.getImage("arrowUp.png"), dp.getDrawPoint().x, dp.getDrawPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
+            paintMap.put(State.DOWN, (dp) -> dp.getG2d().drawImage(Images.getImage("arrowDown.png"), dp.getDrawPoint().x, dp.getDrawPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
+            paintMap.put(State.LEFT, (dp) -> dp.getG2d().drawImage(Images.getImage("arrowLeft.png"), dp.getDrawPoint().x, dp.getDrawPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
+            paintMap.put(State.RIGHT, (dp) -> dp.getG2d().drawImage(Images.getImage("arrowRight.png"), dp.getDrawPoint().x, dp.getDrawPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
+            paintMap.put(State.OFF, (dp) -> dp.getG2d().drawImage(Images.getImage("redCross.png"), dp.getDrawPoint().x, dp.getDrawPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
         }
         drawGrid = new DrawGrid<>("Scaffolds", State.class, pointMap, State.EMPTY, paintMap);
     }

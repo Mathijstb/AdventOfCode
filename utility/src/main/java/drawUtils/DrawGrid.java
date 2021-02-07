@@ -19,7 +19,6 @@ public class DrawGrid<T> {
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
                 ex.printStackTrace();
             }
-
             frame = new JFrame(title);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             gridPanel = new GridPanel<>(c, pointTypeMap, defaultValue, paintMap);
@@ -31,21 +30,26 @@ public class DrawGrid<T> {
     }
 
     public void setPointTypeMap(Map<Point, T> pointTypeMap) {
-        EventQueue.invokeLater(() -> {
-            gridPanel.pointTypeMap = pointTypeMap;
-        });
+        EventQueue.invokeLater(() -> gridPanel.pointTypeMap = pointTypeMap);
     }
 
     public void repaint() {
-        EventQueue.invokeLater(() -> {
-            frame.repaint();
-        });
+        EventQueue.invokeLater(() -> frame.repaint());
+    }
+
+    public void setLocation(int x, int y) {
+        EventQueue.invokeLater(() -> frame.setLocation(x, y));
+    }
+
+    public void setSize(int width, int height) {
+        EventQueue.invokeLater(() -> frame.setSize(width, height));
     }
 
     @Value
     public static class DrawParameters {
         Graphics2D g2d;
-        Point point;
+        Point gridPoint;
+        Point drawPoint;
         int blockSize;
     }
 
@@ -83,7 +87,7 @@ public class DrawGrid<T> {
                     int x = j * blockSize;
                     int y = i * blockSize;
                     if (paintMap.containsKey(pointType)) {
-                        paintMap.get(pointType).accept(new DrawParameters(g2d, new Point(x, y), blockSize));
+                        paintMap.get(pointType).accept(new DrawParameters(g2d, new Point(j, i), new Point(x, y), blockSize));
                     }
                 }
             }

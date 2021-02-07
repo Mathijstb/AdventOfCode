@@ -175,7 +175,7 @@ public class Day18 {
             }
 
             findReachableKeys(pointTypeMap, newVisitedPoints, newRequiredKeys);
-        };
+        }
     }
 
     private static void openDoor(Map<Point, State> pointTypeMap, Character key) {
@@ -210,15 +210,15 @@ public class Day18 {
         if (paintMap == null) {
             paintMap = new HashMap<>();
             //paintMap.put(new State(StateType.EMPTY, null), (dp) -> dp.getG2d().drawImage(Images.getImage("dot.png"), dp.getPoint().x, dp.getPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
-            paintMap.put(new State(StateType.WALL, null), (dp) -> dp.getG2d().drawImage(Images.getImage("wall.png"), dp.getPoint().x, dp.getPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
+            paintMap.put(new State(StateType.WALL, null), (dp) -> dp.getG2d().drawImage(Images.getImage("wall.png"), dp.getDrawPoint().x, dp.getDrawPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
             paintMap.put(new State(StateType.VISITED, null), (dp) -> {
                 dp.getG2d().setColor(Color.GREEN);
-                dp.getG2d().fillRect(dp.getPoint().x, dp.getPoint().y, dp.getBlockSize(), dp.getBlockSize());
+                dp.getG2d().fillRect(dp.getDrawPoint().x, dp.getDrawPoint().y, dp.getBlockSize(), dp.getBlockSize());
             });
             paintMap.put(new State(StateType.POSITION, null), (dp) -> {
                 dp.getG2d().setColor(Color.GREEN);
-                dp.getG2d().fillRect(dp.getPoint().x, dp.getPoint().y, dp.getBlockSize(), dp.getBlockSize());
-                dp.getG2d().drawImage(Images.getImage("ball.png"), dp.getPoint().x + dp.getBlockSize() / 4, dp.getPoint().y + dp.getBlockSize() / 4, dp.getBlockSize() / 2, dp.getBlockSize() / 2, null);
+                dp.getG2d().fillRect(dp.getDrawPoint().x, dp.getDrawPoint().y, dp.getBlockSize(), dp.getBlockSize());
+                dp.getG2d().drawImage(Images.getImage("ball.png"), dp.getDrawPoint().x + dp.getBlockSize() / 4, dp.getDrawPoint().y + dp.getBlockSize() / 4, dp.getBlockSize() / 2, dp.getBlockSize() / 2, null);
             });
             IntStream.rangeClosed('A', 'Z').forEach(i -> drawCharacter((char) i, Color.RED));
             IntStream.rangeClosed('a', 'z').forEach(i -> drawCharacter((char) i, Color.BLUE));
@@ -233,8 +233,8 @@ public class Day18 {
             dp.getG2d().setColor(color);
             dp.getG2d().setFont(font);
             //dp.getG2d().drawImage(Images.getImage(stateType == StateType.DOOR ? "door.png" : "key.png"), dp.getPoint().x, dp.getPoint().y, dp.getBlockSize(), dp.getBlockSize(), null);
-            dp.getG2d().drawString(c.toString(), dp.getPoint().x + dp.getBlockSize() / 2 - font.getSize() / 3, dp.getPoint().y + dp.getBlockSize() / 3 + font.getSize() / 2);
-            //dp.getG2d().drawRect(dp.getPoint().x, dp.getPoint().y, dp.getBlockSize(), dp.getBlockSize());
+            dp.getG2d().drawString(c.toString(), dp.getDrawPoint().x + dp.getBlockSize() / 2 - font.getSize() / 3, dp.getDrawPoint().y + dp.getBlockSize() / 3 + font.getSize() / 2);
+            //
         });
     }
 
