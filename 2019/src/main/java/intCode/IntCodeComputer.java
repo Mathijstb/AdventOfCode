@@ -1,7 +1,5 @@
 package intCode;
 
-import lombok.AllArgsConstructor;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.BlockingDeque;
@@ -33,12 +31,17 @@ public class IntCodeComputer {
         return finished;
     }
 
-    @AllArgsConstructor
     private static class ExecuteProgramTask implements Runnable {
 
         List<String> numbers;
-        private static final LinkedBlockingDeque<Long> inputQueue = new LinkedBlockingDeque<>();
-        private static final LinkedBlockingDeque<Long> outputQueue = new LinkedBlockingDeque<>();
+        private static LinkedBlockingDeque<Long> inputQueue;
+        private static LinkedBlockingDeque<Long> outputQueue;
+
+        public ExecuteProgramTask(List<String> numbers) {
+            this.numbers = numbers;
+            inputQueue = new LinkedBlockingDeque<>();
+            outputQueue = new LinkedBlockingDeque<>();
+        }
 
         private static void addInput(long number) {
             inputQueue.add(number);
