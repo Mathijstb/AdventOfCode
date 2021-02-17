@@ -11,12 +11,34 @@ public class IntCodeComputer {
         ExecuteProgramTask.addInput(number);
     }
 
+    public static void addInput(List<Integer> numbers) {
+        numbers.forEach(ExecuteProgramTask::addInput);
+    }
+
     public static int getOutputSize() {
         return ExecuteProgramTask.outputQueue.size();
     }
 
     public static Optional<Long> getNextOutputValue() {
         return ExecuteProgramTask.getNextOutputValue();
+    }
+
+    public static String getOutput() {
+        StringBuilder sb = new StringBuilder();
+        while (true) {
+            Optional<Long> optionalValue = IntCodeComputer.getNextOutputValue();
+            if (optionalValue.isEmpty()) break;
+            Long value = optionalValue.get();
+            String output;
+            if (value < 128) {
+                output = Character.toString(value.intValue());
+            }
+            else {
+               output = String.valueOf(value);
+            }
+            sb.append(output);
+        }
+        return sb.toString();
     }
 
     public static Thread start(List<String> numbers) {
@@ -26,6 +48,7 @@ public class IntCodeComputer {
     }
 
     private static boolean finished = false;
+    private static final long NEXT_INPUT_VALUE = -8_888_888_888_888_888L;
 
     public static boolean isFinished() {
         return finished;
@@ -50,6 +73,9 @@ public class IntCodeComputer {
         private static Optional<Long> getNextOutputValue() {
             try {
                 Long output = outputQueue.takeFirst();
+                if (output == NEXT_INPUT_VALUE) {
+                    return Optional.empty();
+                }
                 return output == -9_999_999_999_999_999L ? Optional.empty() : Optional.of(output);
             }
             catch (InterruptedException e) {
@@ -83,6 +109,7 @@ public class IntCodeComputer {
 
     private static final ThreadLocal<Long> base = ThreadLocal.withInitial(() -> 0L);
     private static final ThreadLocal<Long> lastOutput = new ThreadLocal<>();
+    private static boolean outputting = false;
 
     private static int getOpCode(String number) {
         return number.length() == 1 ? Integer.parseInt(number) : Integer.parseInt(number.substring(number.length() - 2));
@@ -111,6 +138,10 @@ public class IntCodeComputer {
             return Optional.of(index + 4);
         }
         else if (opCode == 3) {
+            if (outputting) {
+                outputting = false;
+                outputs.add(NEXT_INPUT_VALUE);
+            }
             int destinationIndex = getIndex(numbers,index + 1, paramModes[0]);
             long input;
             try {
@@ -123,6 +154,7 @@ public class IntCodeComputer {
             return Optional.of(index + 2);
         }
         else if (opCode == 4) {
+            outputting = true;
             int sourceIndex = getIndex(numbers,index + 1, paramModes[0]);
             lastOutput.set(Long.parseLong(numbers.get(sourceIndex)));
             outputs.add(Long.parseLong(numbers.get(sourceIndex)));
