@@ -1,3 +1,5 @@
+package day1;
+
 import fileUtils.FileReader;
 
 import java.util.ArrayList;
