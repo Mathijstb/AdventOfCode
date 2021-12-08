@@ -2,9 +2,9 @@ package day8;
 
 import lombok.Value;
 
-import java.util.List;
+import java.util.Set;
 
 @Value
 public class Signal {
-    List<Segment> segments;
+    Set<Segment> segments;
 }

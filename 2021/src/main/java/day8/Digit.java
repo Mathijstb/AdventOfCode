@@ -2,10 +2,10 @@ package day8;
 
 import lombok.Value;
 
-import java.util.List;
+import java.util.Set;
 
 @Value
 public class Digit {
 
-    List<Segment> lightedSegments;
+    Set<Segment> lightedSegments;
 }
