@@ -19,7 +19,6 @@ public class DrawGrid<T> {
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
                 ex.printStackTrace();
             }
-
             frame = new JFrame(title);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             gridPanel = new GridPanel<>(c, pointTypeMap, defaultValue, paintMap);
@@ -31,21 +30,26 @@ public class DrawGrid<T> {
     }
 
     public void setPointTypeMap(Map<Point, T> pointTypeMap) {
-        EventQueue.invokeLater(() -> {
-            gridPanel.pointTypeMap = pointTypeMap;
-        });
+        EventQueue.invokeLater(() -> gridPanel.pointTypeMap = pointTypeMap);
     }
 
     public void repaint() {
-        EventQueue.invokeLater(() -> {
-            frame.repaint();
-        });
+        EventQueue.invokeLater(() -> frame.repaint());
+    }
+
+    public void setLocation(int x, int y) {
+        EventQueue.invokeLater(() -> frame.setLocation(x, y));
+    }
+
+    public void setSize(int width, int height) {
+        EventQueue.invokeLater(() -> frame.setSize(width, height));
     }
 
     @Value
     public static class DrawParameters {
         Graphics2D g2d;
-        Point point;
+        Point gridPoint;
+        Point drawPoint;
         int blockSize;
     }
 
@@ -71,6 +75,7 @@ public class DrawGrid<T> {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             Graphics2D g2d = (Graphics2D) g.create();
+            g2d.setBackground(Color.WHITE);
             Grid<T> grid = new Grid<>(c, pointTypeMap, defaultValue);
             int stateSize = Math.max(grid.getHeight(), grid.getWidth());
 
@@ -81,45 +86,11 @@ public class DrawGrid<T> {
                     T pointType = row[j];
                     int x = j * blockSize;
                     int y = i * blockSize;
-                    //g2d.drawLine(0, 10, 1, 50);
                     if (paintMap.containsKey(pointType)) {
-                        paintMap.get(pointType).accept(new DrawParameters(g2d, new Point(x, y), blockSize));
-                    }
-
-                    // function: (Point, blockSize) ->
-
-                    // biConsumer: (g2d, Point) -> g2d.drawImage(
-                    // - Point,
-                    // - blockSize,
-                    // - image
-                    // - g2d
-                    // - function
-//                    switch (pointType) {
-//                        case UNEXPLORED:
-//                            continue;
-//                        case WALL: {
-//                            g2d.drawImage(wall, x, y, blockSize, blockSize, null);
-//                        }
-//                        break;
-//                        case EMPTY: {
-//                            g2d.drawImage(dot, x, y, blockSize, blockSize, null);
-//                        }
-//                        break;
-//                        case DROID: {
-//                            g2d.drawImage(droid, x, y, blockSize, blockSize, null);
-//                        }
-//                        break;
-//                        case OXYGEN: {
-//                            g2d.drawImage(oxygen, x, y, blockSize, blockSize, null);
-//                        }
-//                        break;
-//                        case GOAL: {
-//                            g2d.drawImage(goal, x, y, blockSize, blockSize, null);
-//                        }
-//                        break;
+                        paintMap.get(pointType).accept(new DrawParameters(g2d, new Point(j, i), new Point(x, y), blockSize));
                     }
                 }
             }
-
+        }
     }
 }
