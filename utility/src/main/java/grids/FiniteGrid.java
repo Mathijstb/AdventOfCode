@@ -59,18 +59,17 @@ public class FiniteGrid<T> {
 
     public List<Point> getNeighbours(Point point, boolean includeDiagonals) {
         List<Point> neighbours = new ArrayList<>();
-        for (int dx = -1; dx <= 1; dx++) {
-            for (int dy = -1; dy <= 1; dy++) {
-                int newX = point.x + dx;
-                int newY = point.y + dy;
-                if (dx == 0 && dy == 0) continue;
-                if (dx != 0 && dy != 0 && !includeDiagonals) continue;
-                if (newX >= 0 && newX < getWidth() && newY >= 0 && newY < getHeight()) {
-                    neighbours.add(new Point(newX, newY));
-                }
-            }
+        neighbours.add(new Point(point.x-1, point.y));
+        neighbours.add(new Point(point.x+1, point.y));
+        neighbours.add(new Point(point.x, point.y-1));
+        neighbours.add(new Point(point.x, point.y+1));
+        if (includeDiagonals) {
+            neighbours.add(new Point(point.x-1, point.y-1));
+            neighbours.add(new Point(point.x+1, point.y-1));
+            neighbours.add(new Point(point.x-1, point.y+1));
+            neighbours.add(new Point(point.x+1, point.y+1));
         }
-        return neighbours;
+        return neighbours.stream().filter(p -> p.x >= 0 && p.y >= 0 && p.x < getWidth() && p.y < getHeight()).collect(Collectors.toList());
     }
 
     public List<T> getNeighbourValues(Point point, boolean includeDiagonals) {
