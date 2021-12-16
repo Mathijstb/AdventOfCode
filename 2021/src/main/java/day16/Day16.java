@@ -14,9 +14,10 @@ public class Day16 {
         assert input.size() == 1;
 
         BigInteger code = new BigInteger(input.get(0), 16);
-        int length = (int)(Math.ceil(code.bitLength() / 4.0) * 4);
+        int length = input.get(0).length() * 4;
         List<Packet> packets = findPackages(code, new Cursor(length), Optional.empty());
         printSumOfVersions(packets);
+        printValue(packets);
     }
 
     private static List<Packet> findPackages(BigInteger code, Cursor cursor, Optional<Integer> packageLimit) {
@@ -24,12 +25,12 @@ public class Day16 {
         int numberOfPackages = 0;
         do {
             int version = readNextBits(code, cursor, 3).intValue();
-            int packetTypeId = readNextBits(code, cursor, 3).intValue();
+            PacketType packetType = PacketType.of(readNextBits(code, cursor, 3).intValue());
 
-            if (packetTypeId == 4) {
-                packets.add(new Packet(PacketType.LITERAL, version, readLiteralValue(code, cursor), new ArrayList<>()));
+            if (packetType == PacketType.LITERAL) {
+                packets.add(new Packet(packetType, version, readLiteralValue(code, cursor), new ArrayList<>()));
             } else {
-                packets.add(new Packet(PacketType.OPERATOR, version, 0, readSubPackages(code, cursor)));
+                packets.add(new Packet(packetType, version, 0, readSubPackages(code, cursor)));
             }
             numberOfPackages += 1;
             if (packageLimit.isPresent() && packageLimit.get() <= numberOfPackages) break;
@@ -58,14 +59,14 @@ public class Day16 {
         }
     }
 
-    private static int readLiteralValue(BigInteger code, Cursor cursor) {
+    private static long readLiteralValue(BigInteger code, Cursor cursor) {
         BigInteger number = BigInteger.ZERO;
         while (true) {
             BigInteger bitGroup = readNextBits(code, cursor, 5);
             number = number.shiftLeft(4).add(readNextBits(bitGroup, new Cursor(4), 4));
             if (!bitGroup.testBit(4)) break;
         }
-        return number.intValue();
+        return number.longValue();
     }
 
     private static BigInteger readNextBits(BigInteger code, Cursor cursor, int number) {
@@ -79,5 +80,10 @@ public class Day16 {
     private static void printSumOfVersions(List<Packet> packets) {
         int sumOfVersions = packets.stream().map(Packet::getSumOfVersions).mapToInt(v -> v).sum();
         System.out.println("Sum of versions: " + sumOfVersions);
+    }
+
+    private static void printValue(List<Packet> packets) {
+        long value = packets.stream().map(Packet::getValue).mapToLong(v -> v).sum();
+        System.out.println("Total value: " + value);
     }
 }
