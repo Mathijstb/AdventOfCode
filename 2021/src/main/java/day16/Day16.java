@@ -48,11 +48,14 @@ public class Day16 {
             case 0: {
                 int subPacketsBitlength = readNextBits(code, cursor, 15).intValue();
                 int length = (int)(Math.ceil(subPacketsBitlength / 4.0) * 4);
+                //Read a subpart of length 'subPacketsBitlength' and move the cursor
                 BigInteger subCode = readNextBits(code, cursor, subPacketsBitlength).shiftLeft(length - subPacketsBitlength);
+                //Determine subpackages of the subCode recursively, with a new cursor
                 return findPackages(subCode, new Cursor(length), Optional.empty());
             }
             case 1:  {
                 int numberOfSubPackets = readNextBits(code, cursor, 11).intValue();
+                //Continue reading the #numberOfSubPackets next packets as subpackets, use the same cursor
                 return findPackages(code, cursor, Optional.of(numberOfSubPackets));
             }
             default: throw new IllegalArgumentException("Invalid length type id");
@@ -60,19 +63,24 @@ public class Day16 {
     }
 
     private static long readLiteralValue(BigInteger code, Cursor cursor) {
+        //Read literal value and move cursor to the next part of the code
         BigInteger number = BigInteger.ZERO;
         while (true) {
             BigInteger bitGroup = readNextBits(code, cursor, 5);
             number = number.shiftLeft(4).add(readNextBits(bitGroup, new Cursor(4), 4));
+
+            //If first bit is a 0, we are done
             if (!bitGroup.testBit(4)) break;
         }
         return number.longValue();
     }
 
     private static BigInteger readNextBits(BigInteger code, Cursor cursor, int number) {
+        // read #number of bits from 'code', starting at position 'cursor'.
         int cursorValue = cursor.getValue();
         BigInteger result = code.subtract(code.shiftRight(cursorValue).shiftLeft(cursorValue))
                                 .shiftRight(cursorValue - number);
+        //move cursor to next part
         cursor.move(number);
         return result;
     }
