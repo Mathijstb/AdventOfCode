@@ -12,6 +12,16 @@ public class InfiniteGrid<T> {
 
     private final Map<Point, T> points = new HashMap<>();
 
+    public enum DrawConfiguration {
+        REVERSE_X, REVERSE_Y
+    }
+
+    private Set<DrawConfiguration> drawConfiguration = new HashSet<>();
+
+    public void setDrawConfiguration(Set<DrawConfiguration> drawConfiguration) {
+        this.drawConfiguration = drawConfiguration;
+    }
+
     public int getMinX() {
         return points.keySet().stream().map(p -> p.x).mapToInt(v -> v).min().orElseThrow();
     }
@@ -77,14 +87,18 @@ public class InfiniteGrid<T> {
         Map<Integer, Set<Point>> pointMap = new HashMap<>();
         IntStream.range(getMinY(), getMaxY() + 1).forEach(y -> pointMap.put(y, new HashSet<>()));
         getAllPoints().forEach(point -> pointMap.get(point.y).add(point));
-        for (int y = getMinY(); y <= getMaxY(); y++) {
-            int yCoord = y;
-            Set<Point> points = pointMap.get(yCoord);
+        boolean reverseY = drawConfiguration.contains(DrawConfiguration.REVERSE_Y);
+        IntStream rangeY = IntStream.range(getMinY(), getMaxY() + 1);
+        if (drawConfiguration.contains(DrawConfiguration.REVERSE_Y)) {
+            rangeY = rangeY.boxed().sorted(Collections.reverseOrder()).mapToInt(v -> v);
+        }
+        rangeY.forEach(y -> {
+            Set<Point> points = pointMap.get(y);
             String printRow = IntStream.range(getMinX(), getMaxX() + 1).mapToObj(x -> {
-                Point point = new Point(x, yCoord);
+                Point point = new Point(x, y);
                 return points.contains(point) ? toStringFunction.apply(getValue(point)) : emptyValue;
             }).collect(Collectors.joining());
             System.out.println(printRow);
-        }
+        });
     }
 }
