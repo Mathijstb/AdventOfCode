@@ -4,13 +4,37 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class Pair {
+    public Pair(Optional<Long> numericalValue, Optional<Pair> left, Optional<Pair> right, Optional<Pair> ancestor) {
+        this.numericalValue = numericalValue;
+        this.left = left;
+        this.right = right;
+        this.ancestor = ancestor;
+    }
 
-    Optional<Integer> numericalValue;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Pair pair = (Pair) o;
+
+        return id.equals(pair.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    UUID id = UUID.randomUUID();
+
+    Optional<Long> numericalValue;
 
     Optional<Pair> left;
 
@@ -18,13 +42,13 @@ public class Pair {
 
     Optional<Pair> ancestor = Optional.empty();
 
-    public Pair(Optional<Integer> numericalValue, Optional<Pair> left, Optional<Pair> right) {
+    public Pair(Optional<Long> numericalValue, Optional<Pair> left, Optional<Pair> right) {
         this.numericalValue = numericalValue;
         this.left = left;
         this.right = right;
     }
 
-    public void addValue(int value) {
+    public void addValue(long value) {
         setNumericalValue(Optional.of(numericalValue.orElseThrow() + value));
     }
 
@@ -82,6 +106,18 @@ public class Pair {
                 return Optional.empty();
             }
         }
+    }
+
+    public long getMagnitude() {
+        return numericalValue.orElseGet(() -> numericalValue.orElse(3 * left.orElseThrow().getMagnitude() + 2 * right.orElseThrow().getMagnitude()));
+    }
+
+    public String explodableToString() {
+        return String.format("[%s,%s]", left.orElseThrow().numericalValue.orElseThrow(), right.orElseThrow().numericalValue.orElseThrow());
+    }
+
+    public String splittableToString() {
+        return String.format("%s", numericalValue.orElseThrow());
     }
 
     @Override

@@ -16,21 +16,30 @@ public class Day18 {
     }
 
     private static void executePairAddition(List<Pair> pairs) {
-        Pair result = pairs.stream().reduce((pair1, pair2) -> reducePair(combinePair(pair1, pair2))).orElseThrow();
-        System.out.println(result);
+        Pair result;
+        if (pairs.size() == 1) {
+            result = reducePair(pairs.get(0));
+        }
+        else {
+            result = pairs.stream().reduce((pair1, pair2) -> reducePair(combinePair(pair1, pair2))).orElseThrow();
+        }
+        System.out.println("Magnitude: " + result.getMagnitude());
     }
 
     private static Pair reducePair(Pair pair) {
+        System.out.println("Start:                      " + pair.toString());
         Optional<Pair> explodable = findExplodable(pair);
         Optional<Pair> splittable = findSplittable(pair);
         while (explodable.isPresent() || splittable.isPresent()) {
             while (explodable.isPresent()) {
                 explode(explodable.get());
+                System.out.println(String.format("After explosion of %7s", explodable.orElseThrow().explodableToString()) + ": " + pair);
                 explodable = findExplodable(pair);
             }
-            while (splittable.isPresent()) {
+            splittable = findSplittable(pair);
+            if (splittable.isPresent()) {
                 split(splittable.get());
-                splittable = findSplittable(pair);
+                System.out.println(String.format("After split of     %7s", splittable.orElseThrow().splittableToString()) + ": " + pair);
             }
             explodable = findExplodable(pair);
             splittable = findSplittable(pair);
@@ -54,18 +63,18 @@ public class Day18 {
         pair.findLeftNumericalValue(true).ifPresent(value -> value.addValue(pair.left.orElseThrow().numericalValue.orElseThrow()));
         pair.findRightNumericalValue(true).ifPresent(value -> value.addValue(pair.right.orElseThrow().numericalValue.orElseThrow()));
         Pair ancestor = pair.ancestor.orElseThrow();
-        if (ancestor.left.orElseThrow().equals(pair)) {
-            ancestor.setLeft(Optional.of(new Pair(Optional.of(0), Optional.empty(), Optional.empty(), Optional.of(ancestor))));
+        if (pair.isLeftPair()) {
+            ancestor.setLeft(Optional.of(new Pair(Optional.of(0L), Optional.empty(), Optional.empty(), Optional.of(ancestor))));
         }
         else {
-            ancestor.setRight(Optional.of(new Pair(Optional.of(0), Optional.empty(), Optional.empty(), Optional.of(ancestor))));
+            ancestor.setRight(Optional.of(new Pair(Optional.of(0L), Optional.empty(), Optional.empty(), Optional.of(ancestor))));
         }
     }
 
     private static void split(Pair pair) {
-        int value = pair.getNumericalValue().orElseThrow();
-        int leftValue = value / 2;
-        int rightValue = (value / 2) * 2 == value ? value / 2 : value / 2 + 1;
+        long value = pair.getNumericalValue().orElseThrow();
+        long leftValue = value / 2;
+        long rightValue = (value / 2) * 2 == value ? value / 2 : value / 2 + 1;
         Pair newPair = combinePair(new Pair(Optional.of(leftValue), Optional.empty(), Optional.empty()),
                                    new Pair(Optional.of(rightValue), Optional.empty(), Optional.empty()));
         Pair ancestor = pair.getAncestor().orElseThrow();
@@ -101,7 +110,7 @@ public class Day18 {
         }
         else {
             // return Pair with numerical value
-            return new Pair(Optional.of(Integer.parseInt(String.valueOf(character))), Optional.empty(), Optional.empty());
+            return new Pair(Optional.of(Long.parseLong(String.valueOf(character))), Optional.empty(), Optional.empty());
         }
     }
 
