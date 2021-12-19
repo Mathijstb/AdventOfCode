@@ -120,6 +120,18 @@ public class Pair {
         return String.format("%s", numericalValue.orElseThrow());
     }
 
+    public Pair copy() {
+        if (numericalValue.isPresent()) {
+            return new Pair(numericalValue, Optional.empty(), Optional.empty());
+        }
+        Optional<Pair> leftCopy = Optional.of(left.orElseThrow().copy());
+        Optional<Pair> rightCopy = Optional.of(right.orElseThrow().copy());
+        Pair result = new Pair(Optional.empty(), leftCopy, rightCopy);
+        leftCopy.ifPresent(left -> left.setAncestor(Optional.of(result)));
+        rightCopy.ifPresent(right -> right.setAncestor(Optional.of(result)));
+        return result;
+    }
+
     @Override
     public String toString() {
         return numericalValue.isPresent() ? String.valueOf(numericalValue.get()) : String.format("[%s,%s]", left.orElseThrow(), right.orElseThrow());

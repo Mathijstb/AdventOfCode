@@ -12,10 +12,21 @@ public class Day18 {
     public static void execute() {
         List<String> input = FileReader.getFileReader().readFile("input18.csv");
         List<Pair> pairs = input.stream().map(Day18::readPair).collect(Collectors.toList());
-        executePairAddition(pairs);
+
+        List<Pair> copyList = pairs.stream().map(Pair::copy).collect(Collectors.toList());
+        Pair result = executePairAddition(copyList);
+        System.out.println("Magnitude: " + result.getMagnitude());
+        System.out.println();
+
+        List<Pair> copyList2 = pairs.stream().map(Pair::copy).collect(Collectors.toList());
+        Pair maxPair = findAdditionWithLargestMaginitude(copyList2);
+        System.out.println();
+        System.out.println("Pair with largest magnitude: " + maxPair);
+        System.out.println("Largest magnitude: " + maxPair.getMagnitude());
+        System.out.println();
     }
 
-    private static void executePairAddition(List<Pair> pairs) {
+    private static Pair executePairAddition(List<Pair> pairs) {
         Pair result;
         if (pairs.size() == 1) {
             result = reducePair(pairs.get(0));
@@ -23,7 +34,25 @@ public class Day18 {
         else {
             result = pairs.stream().reduce((pair1, pair2) -> reducePair(combinePair(pair1, pair2))).orElseThrow();
         }
-        System.out.println("Magnitude: " + result.getMagnitude());
+        return result;
+    }
+
+    private static Pair findAdditionWithLargestMaginitude(List<Pair> pairs) {
+        long maxMagnitude = 0;
+        Pair maxPair = pairs.get(0);
+        for (int i = 0; i < pairs.size(); i++) {
+            for (int j = 0; j < pairs.size(); j++) {
+                if (i != j) {
+                    Pair pair = executePairAddition(List.of(pairs.get(i).copy(), pairs.get(j).copy()));
+                    long magnitude = pair.getMagnitude();
+                    if (magnitude > maxMagnitude) {
+                        maxMagnitude = magnitude;
+                        maxPair = pair;
+                    }
+                }
+            }
+        }
+        return maxPair;
     }
 
     private static Pair reducePair(Pair pair) {
