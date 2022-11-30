@@ -12,7 +12,6 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="2015" target="11" />
       <module name="2021" target="11" />
       <module name="AdventOfCode" target="11" />
       <module name="utility" target="11" />
