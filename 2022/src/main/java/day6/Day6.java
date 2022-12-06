@@ -2,8 +2,8 @@ package day6;
 
 import fileUtils.FileReader;
 
-import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Day6 {
 
@@ -16,16 +16,14 @@ public class Day6 {
 
     private static void findFirstMarker(String line, int size) {
         for (int i = 0; i < line.length()-size; i++) {
-            var sub = line.substring(i, i + size);
-            var chars = new HashSet<>();
-            for (int j = 0; j < sub.length(); j++) {
-                chars.add(sub.charAt(j));
-            }
-            if (chars.size() == size) {
+            var characterSet = line.substring(i, i + size)
+                    .chars()
+                    .mapToObj(chr -> (char) chr)
+                    .collect(Collectors.toSet());
+            if (characterSet.size() == size) {
                 System.out.println("Index: " + (i + size));
                 break;
             }
-
         }
     }
 }
