@@ -1,7 +1,5 @@
 package day20;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import fileUtils.FileReader;
 
 import java.awt.*;

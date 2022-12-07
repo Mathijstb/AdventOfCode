@@ -1,7 +1,5 @@
 package day17;
 
-import com.google.common.collect.Sets;
-
 import java.util.Set;
 
 public enum State {

@@ -7,8 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static junit.framework.Assert.assertEquals;
-
 public class Day4 {
 
     public static void execute() {

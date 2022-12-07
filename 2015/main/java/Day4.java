@@ -1,5 +1,4 @@
 import fileUtils.FileReader;
-import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.List;
 import java.util.regex.Pattern;
