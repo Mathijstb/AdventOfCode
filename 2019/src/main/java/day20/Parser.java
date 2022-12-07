@@ -1,6 +1,5 @@
 package day20;
 
-import com.google.common.collect.Lists;
 
 import java.awt.*;
 import java.util.Comparator;

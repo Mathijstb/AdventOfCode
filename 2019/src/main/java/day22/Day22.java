@@ -1,6 +1,5 @@
 package day22;
 
-import com.google.common.collect.Lists;
 import fileUtils.FileReader;
 import lombok.Value;
 

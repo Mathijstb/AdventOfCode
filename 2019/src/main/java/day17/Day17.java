@@ -1,6 +1,5 @@
 package day17;
 
-import com.google.common.collect.Lists;
 import drawUtils.DrawGrid;
 import drawUtils.Images;
 import fileUtils.FileReader;

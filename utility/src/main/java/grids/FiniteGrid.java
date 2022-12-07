@@ -2,7 +2,9 @@ package grids;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -57,6 +59,14 @@ public class FiniteGrid<T> {
                 .collect(Collectors.toList());
     }
 
+    public List<T> getRow(int y) {
+        return points.get(y);
+    }
+
+    public List<T> getCol(int x) {
+        return points.stream().map(row -> row.get(x)).toList();
+    }
+
     public List<Point> getNeighbours(Point point, boolean includeDiagonals) {
         List<Point> neighbours = new ArrayList<>();
         neighbours.add(new Point(point.x-1, point.y));
@@ -75,5 +85,37 @@ public class FiniteGrid<T> {
     public List<T> getNeighbourValues(Point point, boolean includeDiagonals) {
         List<Point> neighbours = getNeighbours(point, includeDiagonals);
         return neighbours.stream().map(n -> points.get(n.y).get(n.x)).collect(Collectors.toList());
+    }
+
+    public Optional<Point> getPoint(Point p) {
+        return  (p.x >= 0 && p.x < getWidth() && p.y >= 0 && p.y < getHeight()) ? Optional.of(p) : Optional.empty();
+    }
+
+    public Optional<Point> getNeighbour(Point point, NeighbourType type) {
+        return switch (type) {
+            case UP -> getPoint(new Point(point.x, point.y - 1));
+            case DOWN -> getPoint(new Point(point.x, point.y + 1));
+            case LEFT -> getPoint(new Point(point.x - 1, point.y));
+            case RIGHT -> getPoint(new Point(point.x + 1, point.y));
+        };
+    }
+
+    public List<Point> getAllNeighboursInDirection(Point point, NeighbourType type) {
+        var neighbour = switch (type) {
+            case UP -> getPoint(new Point(point.x, point.y - 1));
+            case DOWN -> getPoint(new Point(point.x, point.y + 1));
+            case LEFT -> getPoint(new Point(point.x - 1, point.y));
+            case RIGHT -> getPoint(new Point(point.x + 1, point.y));
+        };
+        if (neighbour.isEmpty()) {
+            return Collections.emptyList();
+        }
+        else {
+            var result = new ArrayList<Point>();
+            result.add(neighbour.get());
+            result.addAll(getAllNeighboursInDirection(neighbour.get(), type));
+            return result;
+        }
+
     }
 }
