@@ -39,6 +39,20 @@ public class Day9 {
         }
         long numberOfMarks = grid.getAllPoints().size();
         System.out.println("Number of points visited by tail: " + numberOfMarks);
+        drawGrid(grid.copy(), head, tails, start);
+    }
+
+    private static void drawGrid(InfiniteGrid<PointType> grid, Point head, List<Point> tails, Point start) {
+        grid.setValue(start, PointType.START);
+        tails.forEach(tail -> grid.setValue(tail, PointType.TAIL));
+        grid.setValue(head, PointType.HEAD);
+        grid.draw(value -> switch (value) {
+                    case CROSS -> "#";
+                    case HEAD -> "H";
+                    case TAIL -> "T";
+                    case START -> "s";
+                }
+                , " ");
     }
 
     private static Point moveHead(Point head, Instruction instruction) {

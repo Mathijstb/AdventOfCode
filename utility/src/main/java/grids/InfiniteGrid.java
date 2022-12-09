@@ -18,6 +18,13 @@ public class InfiniteGrid<T> {
 
     private Set<DrawConfiguration> drawConfiguration = new HashSet<>();
 
+    public InfiniteGrid<T> copy() {
+        var result = new InfiniteGrid<T>();
+        points.forEach((key, value) -> result.setValue(new Point(key), value));
+        result.drawConfiguration = drawConfiguration;
+        return result;
+    }
+
     public void setDrawConfiguration(Set<DrawConfiguration> drawConfiguration) {
         this.drawConfiguration = drawConfiguration;
     }
