@@ -33,7 +33,13 @@ public class DrawGrid<T> {
         EventQueue.invokeLater(() -> gridPanel.pointTypeMap = pointTypeMap);
     }
 
-    public void repaint() {
+    public void repaint(int sleepTime) {
+        try {
+            Thread.sleep(sleepTime);
+        }
+        catch (InterruptedException e) {
+            throw new RuntimeException("Interrupted");
+        }
         EventQueue.invokeLater(() -> frame.repaint());
     }
 
