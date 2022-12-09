@@ -1,0 +1,90 @@
+package day9;
+
+import fileUtils.FileReader;
+import grids.InfiniteGrid;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
+
+public class Day9 {
+
+    public static void execute() {
+        List<String> lines = FileReader.getFileReader().readFile("input9.csv");
+        var instructions = readInstructions(lines);
+        executeInstructions(instructions, 1);
+        executeInstructions(instructions, 9);
+    }
+
+    private static List<Instruction> readInstructions(List<String> lines) {
+        return lines.stream().map(line -> {
+            var directionAndAmount = line.split(" ");
+            return new Instruction(Direction.of(directionAndAmount[0]), Integer.parseInt(directionAndAmount[1]));
+        }).toList();
+    }
+
+
+    private static void executeInstructions(List<Instruction> instructions, int numberOfTails) {
+        var start = new Point(0, 0);
+        var grid = new InfiniteGrid<PointType>();
+        grid.setValue(new Point(start), PointType.CROSS);
+        var head = new Point(start);
+        List<Point> tails = IntStream.range(0, numberOfTails).mapToObj(i -> new Point(start)).toList();
+        for (Instruction instruction : instructions) {
+            for (int i = 0; i < instruction.amount(); i++) {
+                head = moveHead(head, instruction);
+                tails = moveTails(head, tails, grid);
+            }
+        }
+        long numberOfMarks = grid.getAllPoints().size();
+        System.out.println("Number of points visited by tail: " + numberOfMarks);
+    }
+
+    private static Point moveHead(Point head, Instruction instruction) {
+        return switch (instruction.direction()) {
+            case UP -> new Point(head.x, head.y - 1);
+            case DOWN -> new Point(head.x, head.y + 1);
+            case LEFT -> new Point(head.x - 1, head.y);
+            case RIGHT -> new Point(head.x + 1, head.y);
+        };
+    }
+
+    private static List<Point> moveTails(Point head, List<Point> tails, InfiniteGrid<PointType> grid) {
+        var newTails = new ArrayList<>(tails);
+        var parent = head;
+        for (int j = 0; j < tails.size(); j++) {
+            var tail = tails.get(j);
+            var newTail = moveTail(parent, tail);
+            if (!newTail.equals(tail)) {
+                newTails.set(j, newTail);
+                if (j == tails.size() - 1)  {
+                    grid.setValue(newTail, PointType.CROSS);
+                }
+            }
+            parent = newTail;
+        }
+        return newTails;
+    }
+
+    private static Point moveTail(Point head, Point tail) {
+        if (!isAdjacent(head, tail)) {
+            var diffX = head.x - tail.x;
+            var diffY = head.y - tail.y;
+            int newX = tail.x;
+            int newY = tail.y;
+            if (diffX > 0) newX += 1;
+            if (diffX < 0) newX -= 1;
+            if (diffY > 0) newY += 1;
+            if (diffY < 0) newY -=1;
+            return new Point(newX, newY);
+        }
+        return tail;
+    }
+
+    private static boolean isAdjacent(Point head, Point tail) {
+        var absDiffX = Math.abs(head.x - tail.x);
+        var absDiffY = Math.abs(head.y - tail.y);
+        return (absDiffX <= 1 && absDiffY <= 1);
+    }
+}
