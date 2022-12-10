@@ -22,6 +22,7 @@ public class DrawGrid<T> {
             frame = new JFrame(title);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             gridPanel = new GridPanel<>(c, pointTypeMap, defaultValue, paintMap);
+            gridPanel.setBackground(Color.white);
             frame.add(gridPanel);
             frame.pack();
             frame.setLocationRelativeTo(null);
