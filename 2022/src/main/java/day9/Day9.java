@@ -1,11 +1,16 @@
 package day9;
 
+import drawUtils.DrawGrid;
+import drawUtils.Images;
 import fileUtils.FileReader;
 import grids.InfiniteGrid;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 public class Day9 {
@@ -29,6 +34,12 @@ public class Day9 {
         var start = new Point(0, 0);
         var grid = new InfiniteGrid<PointType>();
         grid.setValue(new Point(start), PointType.CROSS);
+
+        //For drawing movie
+        Map<PointType, Consumer<DrawGrid.DrawParameters>> paintMap = new HashMap<>();
+        paintMap.put(PointType.CROSS, (dp) -> dp.getG2d().drawImage(Images.getImage("ball.png"), dp.getDrawPoint().x, dp.getDrawPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
+        var drawGrid = new DrawGrid<>("Snake", PointType.class, grid.points, PointType.EMPTY, paintMap);
+
         var head = new Point(start);
         List<Point> tails = IntStream.range(0, numberOfTails).mapToObj(i -> new Point(start)).toList();
         for (Instruction instruction : instructions) {
@@ -36,10 +47,17 @@ public class Day9 {
                 head = moveHead(head, instruction);
                 tails = moveTails(head, tails, grid);
             }
+            repaint(drawGrid, grid, head, tails, start);
         }
         long numberOfMarks = grid.getAllPoints().size();
         System.out.println("Number of points visited by tail: " + numberOfMarks);
         drawGrid(grid.copy(), head, tails, start);
+    }
+
+    private static void repaint(DrawGrid<PointType> drawGrid, InfiniteGrid<PointType> grid, Point head, List<Point> tails, Point start) {
+        var pointMap = grid.copy().points;
+        drawGrid.setPointTypeMap(grid.copy().points);
+        drawGrid.repaint(5);
     }
 
     private static void drawGrid(InfiniteGrid<PointType> grid, Point head, List<Point> tails, Point start) {
@@ -47,6 +65,7 @@ public class Day9 {
         tails.forEach(tail -> grid.setValue(tail, PointType.TAIL));
         grid.setValue(head, PointType.HEAD);
         grid.draw(value -> switch (value) {
+                    case EMPTY -> " ";
                     case CROSS -> "#";
                     case HEAD -> "H";
                     case TAIL -> "T";

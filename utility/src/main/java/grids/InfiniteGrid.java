@@ -10,7 +10,7 @@ import java.util.stream.IntStream;
 
 public class InfiniteGrid<T> {
 
-    private final Map<Point, T> points = new HashMap<>();
+    public final Map<Point, T> points = new HashMap<>();
 
     public enum DrawConfiguration {
         REVERSE_X, REVERSE_Y
