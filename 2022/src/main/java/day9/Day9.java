@@ -18,7 +18,7 @@ public class Day9 {
     public static void execute() {
         List<String> lines = FileReader.getFileReader().readFile("input9.csv");
         var instructions = readInstructions(lines);
-        executeInstructions(instructions, 1);
+        //executeInstructions(instructions, 1);
         executeInstructions(instructions, 9);
     }
 
@@ -38,7 +38,23 @@ public class Day9 {
         //For drawing movie
         Map<PointType, Consumer<DrawGrid.DrawParameters>> paintMap = new HashMap<>();
         paintMap.put(PointType.CROSS, (dp) -> dp.getG2d().drawImage(Images.getImage("ball.png"), dp.getDrawPoint().x, dp.getDrawPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
+        paintMap.put(PointType.START, (dp) -> dp.getG2d().drawImage(Images.getImage("arrowUp.png"), dp.getDrawPoint().x, dp.getDrawPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
+        paintMap.put(PointType.HEAD, (dp) -> {
+            dp.getG2d().setColor(Color.RED);
+            dp.getG2d().fillOval(dp.getDrawPoint().x, dp.getDrawPoint().y, dp.getBlockSize(), dp.getBlockSize());
+        });
+        paintMap.put(PointType.TAIL, (dp) -> {
+            dp.getG2d().setColor(Color.GREEN);
+            dp.getG2d().fillRect(dp.getDrawPoint().x, dp.getDrawPoint().y, dp.getBlockSize(), dp.getBlockSize());
+        });
         var drawGrid = new DrawGrid<>("Snake", PointType.class, grid.points, PointType.EMPTY, paintMap);
+
+        try {
+            Thread.sleep(20000);
+        }
+        catch (InterruptedException e) {
+            throw new RuntimeException("Interrupted");
+        }
 
         var head = new Point(start);
         List<Point> tails = IntStream.range(0, numberOfTails).mapToObj(i -> new Point(start)).toList();
@@ -56,8 +72,11 @@ public class Day9 {
 
     private static void repaint(DrawGrid<PointType> drawGrid, InfiniteGrid<PointType> grid, Point head, List<Point> tails, Point start) {
         var pointMap = grid.copy().points;
-        drawGrid.setPointTypeMap(grid.copy().points);
-        drawGrid.repaint(5);
+        pointMap.put(head, PointType.HEAD);
+        tails.forEach(tail -> pointMap.put(tail, PointType.TAIL));
+        pointMap.put(start, PointType.START);
+        drawGrid.setPointTypeMap(pointMap);
+        drawGrid.repaint(10);
     }
 
     private static void drawGrid(InfiniteGrid<PointType> grid, Point head, List<Point> tails, Point start) {
