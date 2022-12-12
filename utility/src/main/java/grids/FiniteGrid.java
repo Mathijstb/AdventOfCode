@@ -12,6 +12,15 @@ import java.util.stream.IntStream;
 
 public class FiniteGrid<T> {
 
+    public static <T> FiniteGrid<T> initializeGrid(int width, int height, T defaultValue) {
+        var result = new FiniteGrid<T>();
+        for (int y = 0; y < height; y++) {
+            List<T> row = IntStream.range(0, width).mapToObj(x -> defaultValue).collect(Collectors.toList());
+            result.addRow(row);
+        }
+        return result;
+    }
+
     private final List<List<T>> points = new ArrayList<>();
 
     public int getWidth() {
@@ -20,6 +29,11 @@ public class FiniteGrid<T> {
 
     public int getHeight() {
         return points.size();
+    }
+
+    public void add(List<T> row) {
+        assert points.size() == 0 || getWidth() == row.size();
+        points.add(row);
     }
 
     public void addRow(List<T> row) {
