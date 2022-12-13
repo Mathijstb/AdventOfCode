@@ -49,6 +49,10 @@ public class InfiniteGrid<T> {
         return points.get(point);
     }
 
+    public boolean containsPoint(Point point) {
+        return points.containsKey(point);
+    }
+
     public void setValue(Point point, T value) {
         points.put(point, value);
     }

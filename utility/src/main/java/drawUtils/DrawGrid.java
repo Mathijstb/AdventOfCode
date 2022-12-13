@@ -76,7 +76,7 @@ public class DrawGrid<T> {
 
         @Override
         public Dimension getPreferredSize() {
-            return new Dimension(800, 800);
+            return new Dimension(2880, 1800);
         }
 
         protected void paintComponent(Graphics g) {
@@ -86,7 +86,7 @@ public class DrawGrid<T> {
             Grid<T> grid = new Grid<>(c, pointTypeMap, defaultValue);
             int stateSize = Math.max(grid.getHeight(), grid.getWidth());
 
-            int blockSize = Math.min(getWidth() - 4, getHeight() - 4) / stateSize;
+            int blockSize = 2*Math.min(getWidth() - 4, getHeight() - 4) / stateSize;
             for (int i = 0; i < grid.getHeight(); i++) {
                 T[] row = grid.getRow(i);
                 for (int j = 0; j < row.length; j++) {
