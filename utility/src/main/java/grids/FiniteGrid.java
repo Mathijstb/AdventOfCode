@@ -44,7 +44,7 @@ public class FiniteGrid<T> {
     public void draw(Function<T, String> toStringFunction) {
         for (int i = 0; i < getHeight(); i++) {
             List<String> strings = points.get(i).stream().map(toStringFunction).collect(Collectors.toList());
-            System.out.println(strings);
+            System.out.println(String.join("", strings));
         }
     }
 
