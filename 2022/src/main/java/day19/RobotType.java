@@ -8,6 +8,15 @@ public enum RobotType {
 
     final int index;
 
+    public static RobotType harvestsResourceType(ResourceType resourceType) {
+        return switch (resourceType) {
+            case ORE -> ORE;
+            case CLAY -> CLAY;
+            case OBSIDIAN -> OBSIDIAN;
+            case GEODE -> GEODE;
+        };
+    }
+
     RobotType(int index) {
         this.index = index;
     }

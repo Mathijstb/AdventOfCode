@@ -31,6 +31,12 @@ public class FiniteGrid<T> {
         return points.size();
     }
 
+    public FiniteGrid<T> copy() {
+        var result = new FiniteGrid<T>();
+        points.forEach(row -> result.addRow(new ArrayList<>(row)));
+        return result;
+    }
+
     public void add(List<T> row) {
         assert points.size() == 0 || getWidth() == row.size();
         points.add(row);
@@ -73,6 +79,14 @@ public class FiniteGrid<T> {
                 .collect(Collectors.toList());
     }
 
+    public List<Point> getRowPoints(int y) {
+        return IntStream.range(0, getWidth()).mapToObj(x -> new Point(x, y)).toList();
+    }
+
+    public List<Point> getColPoints(int x) {
+        return IntStream.range(0, getHeight()).mapToObj(y -> new Point(x, y)).toList();
+    }
+
     public List<T> getRow(int y) {
         return points.get(y);
     }
@@ -103,6 +117,10 @@ public class FiniteGrid<T> {
 
     public Optional<Point> getPoint(Point p) {
         return  (p.x >= 0 && p.x < getWidth() && p.y >= 0 && p.y < getHeight()) ? Optional.of(p) : Optional.empty();
+    }
+
+    public boolean containsPoint(Point p) {
+        return getPoint(p).isPresent();
     }
 
     public Optional<Point> getNeighbour(Point point, NeighbourType type) {

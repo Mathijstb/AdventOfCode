@@ -40,6 +40,18 @@ public record State(List<Integer> robots, List<Integer> resources) {
                 .allMatch(entry-> getResourceAmount(entry.getKey()) >= entry.getValue());
     }
 
+    public int timeNeededToBuildRobot(RobotType type, BluePrint bluePrint) {
+        return bluePrint.costs().get(type).entrySet().stream()
+                .map(entry -> {
+                    var resourceType = entry.getKey();
+                    var cost = entry.getValue();
+                    var inStock =  getResourceAmount(resourceType);
+                    var needed = cost - inStock;
+                    var robotAmount = getRobotAmount(RobotType.harvestsResourceType(resourceType));
+                    return robotAmount > 0 ? (int) Math.ceil((double)needed / robotAmount) : 999;
+                }).reduce(0, Integer::max);
+    }
+
     public State buildRobot(RobotType type, BluePrint bluePrint) {
         var newRobots = new ArrayList<>(robots);
         newRobots.set(type.index, newRobots.get(type.index) + 1);
