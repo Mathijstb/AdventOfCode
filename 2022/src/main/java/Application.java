@@ -1,8 +1,8 @@
-import day20.Day20;
+import day22.Day22;
 
 public class Application {
 
     public static void main(String [] args) {
-        Day20.execute();
+        Day22.execute();
     }
 }
