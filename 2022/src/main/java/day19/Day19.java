@@ -46,58 +46,24 @@ public class Day19 {
     private static int determineMaxNumberOfGeodes(int numberOfMinutes) {
         Map<Integer, Set<State>> StatesMap = new HashMap<>();
         var startState = new State(List.of(1 ,0, 0, 0), List.of(0 ,0, 0, 0));
-        Set<State> previousStates = new HashSet<State>(Collections.singleton(startState));
-
         for(BluePrint bluePrint : bluePrints) {
-            for (int i = 0; i < 24; i++) {
-                Set<State> newStates = new HashSet<>();
-                for(State state : previousStates) {
-                    newStates.addAll(determineNextStates(state, (24 - i), bluePrint));
-                }
-                Set<State> dominatedStates = new HashSet<>();
-                for(State state1 : newStates) {
-                    for (State state2 : newStates) {
-                        if (state1.isHigherState(state2)) {
-                            dominatedStates.add(state2);
-                        } else if (state2.isHigherState(state1)) {
-                            dominatedStates.add(state1);
-                            break;
-                        }
-                    }
-                }
-
-                newStates.removeAll(dominatedStates);
-                previousStates = newStates;
-            }
+            determineNumberOfGeodes(startState, 24, bluePrint);
         }
         return 0;
     }
 
-    private static Set<State> determineNextStates(State state, int timeLeft, BluePrint bluePrint) {
+    private static int determineNumberOfGeodes(State state, int timeLeft, BluePrint bluePrint) {
         if (timeLeft == 0) {
-            return Set.of(state);
+            return state.getResourceAmount(ResourceType.GEODE);
         }
-        var amountOfOreRobots = state.getRobotAmount(RobotType.ORE);
-        var amountOfClayRobots = state.getRobotAmount(RobotType.CLAY);
-        var amountOfObsidianRobots = state.getRobotAmount(RobotType.OBSIDIAN);
-        var amountOfGeodeRobots = state.getRobotAmount(RobotType.GEODE);
-        Set<State> result = new HashSet<>();
-        if (state.canBuildRobot(RobotType.GEODE, bluePrint)) {
-            result.add(state.buildRobot(RobotType.GEODE, bluePrint));
+        if (timeLeft == 1) {
+            return state.getResourceAmount(ResourceType.GEODE) + state.getRobotAmount(RobotType.GEODE);
         }
-        else {
-            Arrays.stream(RobotType.values()).forEach(robotType -> {
-                if (state.canBuildRobot(robotType, bluePrint)) {
-                    result.add(state.buildRobot(robotType, bluePrint));
-                }
-            });
+        for (RobotType robotType : RobotType.values()) {
+            var timeNeeded = state.timeNeededToBuildRobot(robotType, bluePrint);
+            //System.out.println("test");
         }
-        if (result.isEmpty()) {
-            result.add(state.copy());
-        }
-        return result.stream()
-                .map(s -> s.addResources(List.of(amountOfOreRobots, amountOfClayRobots, amountOfObsidianRobots, amountOfGeodeRobots)))
-                .collect(Collectors.toSet());
+        return 0;
     }
 
 }
