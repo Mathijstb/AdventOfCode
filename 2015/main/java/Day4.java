@@ -1,3 +1,4 @@
+import cryptUtils.Crypto;
 import fileUtils.FileReader;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public class Day4 {
         long number = 0;
         while(true) {
             String key = line + number;
-            String hash = DigestUtils.md5Hex(key);
+            String hash = Crypto.hashMD5(key);
             if (Pattern.matches("[0]{6}.*", hash)) {
                 System.out.println("Found key!");
                 System.out.println("Key: " + key);
