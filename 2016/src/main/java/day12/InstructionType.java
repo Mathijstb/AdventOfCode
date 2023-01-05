@@ -1,0 +1,20 @@
+package day12;
+
+import java.util.Arrays;
+
+public enum InstructionType {
+    COPY("cpy"),
+    INCREASE("inc"),
+    DECREASE("dec"),
+    JUMP("jnz");
+
+    private final String shortName;
+
+    InstructionType(String shortName) {
+        this.shortName = shortName;
+    }
+
+    public static InstructionType getInstructionType(String shortName) {
+        return Arrays.stream(InstructionType.values()).filter(type -> type.shortName.equals(shortName)).findFirst().orElseThrow();
+    }
+}
