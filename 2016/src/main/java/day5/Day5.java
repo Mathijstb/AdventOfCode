@@ -1,5 +1,6 @@
 package day5;
 
+import cryptUtils.Crypto;
 import fileUtils.FileReader;
 
 import java.math.BigInteger;
@@ -22,23 +23,11 @@ public class Day5 {
         System.out.println("Advanced password: " + advancedPassword);
     }
 
-    private static String hashMD5(String value) {
-        try {
-            MessageDigest m = MessageDigest.getInstance("MD5");
-            m.reset();
-            var hashText =  new BigInteger(m.digest(value.getBytes())).toString(16);
-            return String.format("%32s", hashText).replace(" ", "0");
-        }
-        catch (Exception e) {
-            throw new RuntimeException();
-        }
-    }
-
     public static String findPassword(String doorId) {
         List<Character> characters = new ArrayList<>();
         int index = 0;
         while (characters.size() < 8) {
-            var hashed = hashMD5(doorId + index);
+            var hashed = Crypto.hashMD5(doorId + index);
             if (hashed.startsWith("00000")) {
                 characters.add(hashed.charAt(5));
                 System.out.println("Character found: " + hashed.charAt(5));
@@ -52,7 +41,7 @@ public class Day5 {
         Map<Integer, Character> characters = new HashMap<>();
         int index = 0;
         while (characters.size() < 8) {
-            var hashed = hashMD5(doorId + index);
+            var hashed = Crypto.hashMD5(doorId + index);
             if (hashed.startsWith("00000")) {
                 var positionChar = hashed.charAt(5);
                 if (Character.isDigit(positionChar)) {
