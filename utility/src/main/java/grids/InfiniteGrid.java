@@ -89,6 +89,24 @@ public class InfiniteGrid<T> {
         return neighbours;
     }
 
+    public List<Point> getNeighbours(Point point, boolean includeDiagonals, Predicate<T> predicate) {
+        List<Point> neighbours = new ArrayList<>();
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                int newX = point.x + dx;
+                int newY = point.y + dy;
+                if (dx == 0 && dy == 0) continue;
+                if (dx != 0 && dy != 0 && !includeDiagonals) continue;
+                if (newX >= getMinX() && newX <= getMaxX() && newY >= getMinY() && newY <= getMaxY()) {
+                    Point newPoint = new Point(newX, newY);
+                    if (points.containsKey(newPoint) && predicate.test(getValue(newPoint))) neighbours.add(newPoint);
+                }
+            }
+        }
+        return neighbours;
+    }
+
+
     public List<T> getNeighbourValues(Point point, boolean includeDiagonals) {
         List<Point> neighbours = getNeighbours(point, includeDiagonals);
         return neighbours.stream().map(points::get).collect(Collectors.toList());
