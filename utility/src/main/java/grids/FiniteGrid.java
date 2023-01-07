@@ -110,6 +110,10 @@ public class FiniteGrid<T> {
         return neighbours.stream().filter(p -> p.x >= 0 && p.y >= 0 && p.x < getWidth() && p.y < getHeight()).collect(Collectors.toList());
     }
 
+    public List<Point> getNeighbours(Point point, boolean includeDiagonals, Predicate<T> predicate) {
+        return getNeighbours(point, includeDiagonals).stream().filter(p -> predicate.test(getValue(p))).toList();
+    }
+
     public List<T> getNeighbourValues(Point point, boolean includeDiagonals) {
         List<Point> neighbours = getNeighbours(point, includeDiagonals);
         return neighbours.stream().map(n -> points.get(n.y).get(n.x)).collect(Collectors.toList());
