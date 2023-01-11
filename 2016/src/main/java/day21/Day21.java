@@ -11,7 +11,6 @@ public class Day21 {
     private static final String SCRAMBLED = "fbgdceah";
 
     public static void execute() {
-        //cdhfgaeb not ok
         List<String> lists = FileReader.getFileReader().readFile("input21.csv");
         var instructions = readInstructions(lists);
 
