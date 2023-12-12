@@ -125,5 +125,4 @@ public class Day5 {
         }
         return seedRange;
     }
-
 }
