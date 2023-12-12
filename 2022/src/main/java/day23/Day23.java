@@ -82,7 +82,7 @@ public class Day23 {
                     grid.setValue(elf.proposal, PointType.ELF);
                     elf.position = elf.proposal;
                 });
-        return movingElves.size() > 0;
+        return !movingElves.isEmpty();
     }
 
     private static void determineProposals(InfiniteGrid<PointType> grid, List<Elf> elves) {

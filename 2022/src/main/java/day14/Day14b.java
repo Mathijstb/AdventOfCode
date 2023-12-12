@@ -160,13 +160,6 @@ public class Day14b {
     }
 
     private static void drawGrid(InfiniteGrid<PointType> grid) {
-        grid.draw(pointType -> switch (pointType) {
-            case ROCK -> "#";
-            case AIR -> ".";
-            case SOURCE -> "+";
-            case SAND -> "o";
-            case ABYSS -> ".";
-        }, " ");
-        System.out.println();
+        Day14a.doDraw(grid);
     }
 }

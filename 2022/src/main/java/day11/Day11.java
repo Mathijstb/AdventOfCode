@@ -76,7 +76,7 @@ public class Day11 {
 
     private static void play(Monkey monkey, List<Monkey> monkeys, List<Long> monkeyBusiness, Function<Long, Long> manageFunction) {
         //System.out.println("Monkey 0:");
-        while (monkey.items().size() > 0) {
+        while (!monkey.items().isEmpty()) {
             monkeyBusiness.set(monkey.number(), monkeyBusiness.get(monkey.number()) + 1);
             var item = monkey.items().removeFirst();
             //System.out.printf("  Monkey inspects an item with a worry level of %s.%n", item);
