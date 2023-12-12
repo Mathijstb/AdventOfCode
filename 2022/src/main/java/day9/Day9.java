@@ -37,15 +37,15 @@ public class Day9 {
 
         //For drawing movie
         Map<PointType, Consumer<DrawGrid.DrawParameters>> paintMap = new HashMap<>();
-        paintMap.put(PointType.CROSS, (dp) -> dp.getG2d().drawImage(Images.getImage("ball.png"), dp.getDrawPoint().x, dp.getDrawPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
-        paintMap.put(PointType.START, (dp) -> dp.getG2d().drawImage(Images.getImage("arrowUp.png"), dp.getDrawPoint().x, dp.getDrawPoint().y, dp.getBlockSize(), dp.getBlockSize(), null));
+        paintMap.put(PointType.CROSS, (dp) -> dp.g2d().drawImage(Images.getImage("ball.png"), dp.drawPoint().x, dp.drawPoint().y, dp.blockSize(), dp.blockSize(), null));
+        paintMap.put(PointType.START, (dp) -> dp.g2d().drawImage(Images.getImage("arrowUp.png"), dp.drawPoint().x, dp.drawPoint().y, dp.blockSize(), dp.blockSize(), null));
         paintMap.put(PointType.HEAD, (dp) -> {
-            dp.getG2d().setColor(Color.RED);
-            dp.getG2d().fillOval(dp.getDrawPoint().x, dp.getDrawPoint().y, dp.getBlockSize(), dp.getBlockSize());
+            dp.g2d().setColor(Color.RED);
+            dp.g2d().fillOval(dp.drawPoint().x, dp.drawPoint().y, dp.blockSize(), dp.blockSize());
         });
         paintMap.put(PointType.TAIL, (dp) -> {
-            dp.getG2d().setColor(Color.GREEN);
-            dp.getG2d().fillRect(dp.getDrawPoint().x, dp.getDrawPoint().y, dp.getBlockSize(), dp.getBlockSize());
+            dp.g2d().setColor(Color.GREEN);
+            dp.g2d().fillRect(dp.drawPoint().x, dp.drawPoint().y, dp.blockSize(), dp.blockSize());
         });
         var drawGrid = new DrawGrid<>("Snake", PointType.class, grid.points, PointType.EMPTY, paintMap);
 

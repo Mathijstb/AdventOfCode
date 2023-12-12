@@ -6,7 +6,6 @@ import grids.InfiniteGrid;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 public class Day23 {

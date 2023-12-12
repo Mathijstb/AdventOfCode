@@ -38,12 +38,12 @@ public class FiniteGrid<T> {
     }
 
     public void add(List<T> row) {
-        assert points.size() == 0 || getWidth() == row.size();
+        assert points.isEmpty() || getWidth() == row.size();
         points.add(row);
     }
 
     public void addRow(List<T> row) {
-        assert points.size() == 0 || getWidth() == row.size();
+        assert points.isEmpty() || getWidth() == row.size();
         points.add(row);
     }
 
@@ -137,12 +137,7 @@ public class FiniteGrid<T> {
     }
 
     public List<Point> getAllNeighboursInDirection(Point point, NeighbourType type) {
-        var neighbour = switch (type) {
-            case UP -> getPoint(new Point(point.x, point.y - 1));
-            case DOWN -> getPoint(new Point(point.x, point.y + 1));
-            case LEFT -> getPoint(new Point(point.x - 1, point.y));
-            case RIGHT -> getPoint(new Point(point.x + 1, point.y));
-        };
+        var neighbour = getNeighbour(point, type);
         if (neighbour.isEmpty()) {
             return Collections.emptyList();
         }

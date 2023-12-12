@@ -1,7 +1,5 @@
 package drawUtils;
 
-import lombok.Value;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.Map;
@@ -16,8 +14,9 @@ public class DrawGrid<T> {
         EventQueue.invokeLater(() -> {
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-                ex.printStackTrace();
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+                     UnsupportedLookAndFeelException ex) {
+                throw new RuntimeException("Error!");
             }
             frame = new JFrame(title);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -37,8 +36,7 @@ public class DrawGrid<T> {
     public void repaint(int sleepTime) {
         try {
             Thread.sleep(sleepTime);
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             throw new RuntimeException("Interrupted");
         }
         EventQueue.invokeLater(() -> frame.repaint());
@@ -52,13 +50,7 @@ public class DrawGrid<T> {
         EventQueue.invokeLater(() -> frame.setSize(width, height));
     }
 
-    @Value
-    public static class DrawParameters {
-        Graphics2D g2d;
-        Point gridPoint;
-        Point drawPoint;
-        int blockSize;
-    }
+    public record DrawParameters(Graphics2D g2d, Point gridPoint, Point drawPoint, int blockSize) { }
 
     public static class GridPanel<T> extends JPanel {
 
@@ -86,7 +78,7 @@ public class DrawGrid<T> {
             Grid<T> grid = new Grid<>(c, pointTypeMap, defaultValue);
             int stateSize = Math.max(grid.getHeight(), grid.getWidth());
 
-            int blockSize = 2*Math.min(getWidth() - 4, getHeight() - 4) / stateSize;
+            int blockSize = 2 * Math.min(getWidth() - 4, getHeight() - 4) / stateSize;
             for (int i = 0; i < grid.getHeight(); i++) {
                 T[] row = grid.getRow(i);
                 for (int j = 0; j < row.length; j++) {
