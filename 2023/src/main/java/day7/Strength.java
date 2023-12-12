@@ -1,7 +1,5 @@
 package day7;
 
-import java.util.Arrays;
-
 public enum Strength {
     FIVE_OF_A_KIND(7),
     FOUR_OF_A_KIND(6),

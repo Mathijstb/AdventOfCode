@@ -20,7 +20,7 @@ import java.net.URL;
  * No checked exceptions.
  *
  * @author David Yu
- * @created Jan 20, 2009
+ * created Jan 20, 2009
  */
 
 public final class ClassLoaderUtil
