@@ -78,7 +78,7 @@ public class DrawGrid<T> {
             Grid<T> grid = new Grid<>(c, pointTypeMap, defaultValue);
             int stateSize = Math.max(grid.getHeight(), grid.getWidth());
 
-            int blockSize = 2 * Math.min(getWidth() - 4, getHeight() - 4) / stateSize;
+            int blockSize = Math.min(getWidth() - 4, getHeight() - 4) / (stateSize);
             for (int i = 0; i < grid.getHeight(); i++) {
                 T[] row = grid.getRow(i);
                 for (int j = 0; j < row.length; j++) {

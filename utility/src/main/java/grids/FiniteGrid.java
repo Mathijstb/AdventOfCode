@@ -1,10 +1,8 @@
 package grids;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -29,6 +27,10 @@ public class FiniteGrid<T> {
 
     public int getHeight() {
         return points.size();
+    }
+
+    public Map<Point, T> getPointMap() {
+        return getAllPoints().stream().collect(Collectors.toMap(p -> p, this::getValue));
     }
 
     public FiniteGrid<T> copy() {
