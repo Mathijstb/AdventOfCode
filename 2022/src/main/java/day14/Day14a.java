@@ -125,6 +125,10 @@ Day14a {
     }
 
     private static void drawGrid(InfiniteGrid<PointType> grid) {
+        doDraw(grid);
+    }
+
+    static void doDraw(InfiniteGrid<PointType> grid) {
         grid.draw(pointType -> switch (pointType) {
             case ROCK -> "#";
             case AIR -> ".";

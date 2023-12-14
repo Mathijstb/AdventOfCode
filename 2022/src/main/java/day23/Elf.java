@@ -1,5 +1,7 @@
 package day23;
 
+import lombok.Getter;
+
 import java.awt.*;
 
 public class Elf {
@@ -8,6 +10,7 @@ public class Elf {
 
     public Point position;
 
+    @Getter
     public int decisionIndex = 0;
 
     public Point proposal;
@@ -18,7 +21,4 @@ public class Elf {
         this.proposal = position;
     }
 
-    public int getDecisionIndex() {
-        return decisionIndex;
-    }
 }

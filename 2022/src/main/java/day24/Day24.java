@@ -2,7 +2,6 @@ package day24;
 
 import fileUtils.FileReader;
 import grids.FiniteGrid;
-import grids.InfiniteGrid;
 
 import java.awt.*;
 import java.util.*;

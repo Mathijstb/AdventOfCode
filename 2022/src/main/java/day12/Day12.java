@@ -55,7 +55,7 @@ public class Day12 {
         Set<Point> currentPoints = new HashSet<>();
         currentPoints.add(finish);
         var distance = 0;
-        while (currentPoints.size() > 0) {
+        while (!currentPoints.isEmpty()) {
             remaining.removeAll(currentPoints);
             distance += 1;
             var neighbours = getNeighbours(currentPoints, remaining, heightMap);

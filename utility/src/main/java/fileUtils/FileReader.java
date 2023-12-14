@@ -21,7 +21,7 @@ public class FileReader {
         }
     }
 
-    public List<List<String>> splitLines(List<String> lines, Predicate<String> separatorPredicate) {
+    public static List<List<String>> splitLines(List<String> lines, Predicate<String> separatorPredicate) {
         var result = new ArrayList<List<String>>();
         var subList = new ArrayList<String>();
         for (String line : lines) {

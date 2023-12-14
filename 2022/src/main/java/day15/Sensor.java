@@ -3,7 +3,6 @@ package day15;
 import java.awt.*;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.IntStream;
 
 public record Sensor(int x, int y, Beacon beacon) {
 

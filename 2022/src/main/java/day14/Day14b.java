@@ -1,7 +1,6 @@
 package day14;
 
 import drawUtils.DrawGrid;
-import drawUtils.Images;
 import fileUtils.FileReader;
 import grids.InfiniteGrid;
 
@@ -20,16 +19,16 @@ public class Day14b {
         //For video -----------------------------------------------------------
         Map<PointType, Consumer<DrawGrid.DrawParameters>> paintMap = new HashMap<>();
         paintMap.put(PointType.SAND, (dp) -> {
-            dp.getG2d().setColor(Color.ORANGE);
-            dp.getG2d().fillOval(dp.getDrawPoint().x, dp.getDrawPoint().y, dp.getBlockSize(), dp.getBlockSize());
+            dp.g2d().setColor(Color.ORANGE);
+            dp.g2d().fillOval(dp.drawPoint().x, dp.drawPoint().y, dp.blockSize(), dp.blockSize());
         });
         paintMap.put(PointType.ROCK, (dp) -> {
-            dp.getG2d().setColor(Color.GRAY);
-            dp.getG2d().fillRect(dp.getDrawPoint().x, dp.getDrawPoint().y, dp.getBlockSize(), dp.getBlockSize());
+            dp.g2d().setColor(Color.GRAY);
+            dp.g2d().fillRect(dp.drawPoint().x, dp.drawPoint().y, dp.blockSize(), dp.blockSize());
         });
         paintMap.put(PointType.AIR, (dp) -> {
-            dp.getG2d().setColor(Color.WHITE);
-            dp.getG2d().fillRect(dp.getDrawPoint().x, dp.getDrawPoint().y, dp.getBlockSize(), dp.getBlockSize());
+            dp.g2d().setColor(Color.WHITE);
+            dp.g2d().fillRect(dp.drawPoint().x, dp.drawPoint().y, dp.blockSize(), dp.blockSize());
         });
         var drawGrid = new DrawGrid<>("Sand", PointType.class, grid.points, PointType.AIR, paintMap);
         //---------------------------------------------------------------------
@@ -161,13 +160,6 @@ public class Day14b {
     }
 
     private static void drawGrid(InfiniteGrid<PointType> grid) {
-        grid.draw(pointType -> switch (pointType) {
-            case ROCK -> "#";
-            case AIR -> ".";
-            case SOURCE -> "+";
-            case SAND -> "o";
-            case ABYSS -> ".";
-        }, " ");
-        System.out.println();
+        Day14a.doDraw(grid);
     }
 }

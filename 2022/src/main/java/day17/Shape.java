@@ -30,7 +30,7 @@ public class Shape {
     }
 
     public Set<Point> getRockPoints() {
-        return grid.getAllPoints().stream().filter(p -> grid.getValue(p)).collect(Collectors.toSet());
+        return grid.getAllPoints().stream().filter(grid::getValue).collect(Collectors.toSet());
     }
 
     public void draw() {

@@ -6,7 +6,6 @@ import grids.InfiniteGrid;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 public class Day23 {
@@ -83,7 +82,7 @@ public class Day23 {
                     grid.setValue(elf.proposal, PointType.ELF);
                     elf.position = elf.proposal;
                 });
-        return movingElves.size() > 0;
+        return !movingElves.isEmpty();
     }
 
     private static void determineProposals(InfiniteGrid<PointType> grid, List<Elf> elves) {
