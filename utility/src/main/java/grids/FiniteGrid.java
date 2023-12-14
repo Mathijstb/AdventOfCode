@@ -39,14 +39,30 @@ public class FiniteGrid<T> {
         return result;
     }
 
-    public void add(List<T> row) {
+    public void addRow(List<T> row) {
         assert points.isEmpty() || getWidth() == row.size();
         points.add(row);
     }
 
-    public void addRow(List<T> row) {
+    public void insertRow(int index, List<T> row) {
         assert points.isEmpty() || getWidth() == row.size();
-        points.add(row);
+        points.add(index, row);
+    }
+
+    public void addColumn(List<T> column) {
+        assert points.isEmpty() || getHeight() == column.size();
+        for (int y = 0; y < points.size(); y++) {
+            var row = points.get(y);
+            row.add(column.get(y));
+        }
+    }
+
+    public void insertColumn(int index, List<T> column) {
+        assert points.isEmpty() || getHeight() == column.size();
+        for (int y = 0; y < points.size(); y++) {
+            var row = points.get(y);
+            row.add(index, column.get(y));
+        }
     }
 
     public void draw(Function<T, String> toStringFunction) {
