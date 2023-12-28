@@ -60,9 +60,7 @@ public class Day10 {
                         if (insideLoop) result.add(point);
                     }
                     case LOOP_V -> insideLoop = !insideLoop;
-                    case LOOP_NE, LOOP_SE -> {
-                        lastCurve = pointType;
-                    }
+                    case LOOP_NE, LOOP_SE -> lastCurve = pointType;
                     case LOOP_NW -> {
                         if (lastCurve.equals(PointType.LOOP_SE)) {
                             insideLoop = !insideLoop;

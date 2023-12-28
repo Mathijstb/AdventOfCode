@@ -63,7 +63,7 @@ public class Day15 {
             if (found) {
                 break;
             }
-        };
+        }
         if (!found) {
             throw new IllegalStateException("Beacon should have been found");
         }
