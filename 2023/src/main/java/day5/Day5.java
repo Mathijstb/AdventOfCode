@@ -36,7 +36,7 @@ public class Day5 {
     private static ConverterMap humidityToLocationMap;
 
     private static List<FoodValue> parseLines(List<String> lines) {
-        var splitLines = FileReader.getFileReader().splitLines(lines, String::isEmpty);
+        var splitLines = FileReader.splitLines(lines, String::isEmpty);
         var seeds = Arrays.stream(splitLines.get(0).get(0).split("seeds: ")[1].split(" "))
                 .map(s -> new FoodValue(Long.parseLong(s))).toList();
         seedToSoilMap = parseSubLines(splitLines.get(1), "seed-to-soil map:");
@@ -50,7 +50,7 @@ public class Day5 {
     }
 
     private static List<SeedRange> parseRanges(List<String> lines) {
-        var splitLines = FileReader.getFileReader().splitLines(lines, String::isEmpty);
+        var splitLines = FileReader.splitLines(lines, String::isEmpty);
         var numbers = Arrays.stream(splitLines.get(0).get(0).split("seeds: ")[1].split(" "))
                 .map(Long::parseLong).toList();
         var seedRanges = new ArrayList<SeedRange>();
