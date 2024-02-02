@@ -25,6 +25,14 @@ public class InfiniteGrid<T> {
         return result;
     }
 
+    public int getWidth() {
+        return getMaxX() - getMinX() + 1;
+    }
+
+    public int getHeight() {
+        return getMaxY() - getMinY() + 1;
+    }
+
     public void setDrawConfiguration(Set<DrawConfiguration> drawConfiguration) {
         this.drawConfiguration = drawConfiguration;
     }
@@ -72,38 +80,31 @@ public class InfiniteGrid<T> {
                 .collect(Collectors.toList());
     }
 
+    private static final Set<Point> neighboursExcludingDiagonalsDiffSet = Set.of(
+            new Point(-1, 0),
+            new Point(1, 0),
+            new Point(0, -1),
+            new Point(0, 1));
+
+    private static final Set<Point> neighboursIncludingDiagonalsDiffSet = Set.of(
+            new Point(-1, 0),
+            new Point(1, 0),
+            new Point(0, -1),
+            new Point(0, 1),
+            new Point(-1, -1),
+            new Point(1, -1),
+            new Point(-1, 1),
+            new Point(1, 1));
+
     public List<Point> getNeighbours(Point point, boolean includeDiagonals) {
-        List<Point> neighbours = new ArrayList<>();
-        for (int dx = -1; dx <= 1; dx++) {
-            for (int dy = -1; dy <= 1; dy++) {
-                int newX = point.x + dx;
-                int newY = point.y + dy;
-                if (dx == 0 && dy == 0) continue;
-                if (dx != 0 && dy != 0 && !includeDiagonals) continue;
-                if (newX >= getMinX() && newX <= getMaxX() && newY >= getMinY() && newY <= getMaxY()) {
-                    Point newPoint = new Point(newX, newY);
-                    if (points.containsKey(newPoint)) neighbours.add(newPoint);
-                }
-            }
-        }
-        return neighbours;
+        var result = includeDiagonals ? neighboursIncludingDiagonalsDiffSet : neighboursExcludingDiagonalsDiffSet;
+        return result.stream().map(diff -> new Point(point.x + diff.x, point.y + diff.y))
+                .filter(points::containsKey).toList();
     }
 
     public List<Point> getNeighbours(Point point, boolean includeDiagonals, Predicate<T> predicate) {
-        List<Point> neighbours = new ArrayList<>();
-        for (int dx = -1; dx <= 1; dx++) {
-            for (int dy = -1; dy <= 1; dy++) {
-                int newX = point.x + dx;
-                int newY = point.y + dy;
-                if (dx == 0 && dy == 0) continue;
-                if (dx != 0 && dy != 0 && !includeDiagonals) continue;
-                if (newX >= getMinX() && newX <= getMaxX() && newY >= getMinY() && newY <= getMaxY()) {
-                    Point newPoint = new Point(newX, newY);
-                    if (points.containsKey(newPoint) && predicate.test(getValue(newPoint))) neighbours.add(newPoint);
-                }
-            }
-        }
-        return neighbours;
+        return getNeighbours(point, includeDiagonals).stream()
+                .filter(p -> predicate.test(getValue(p))).toList();
     }
 
 
