@@ -4,10 +4,7 @@ import fileUtils.FileReader;
 import grids.Grid3D;
 
 import javax.vecmath.Point3i;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -24,35 +21,64 @@ public class Day22 {
         dropBricks(grid, bricks);
         drawGrid(grid);
         printBricksBelow(grid, bricks);
-        System.out.println();
         printBricksAbove(grid, bricks);
-        var numberOfBricksDisintegratable = bricks.stream().filter(brick -> {
+
+        System.out.printf("Number of bricks that can safely be disintegrated: %s%n", determineNumberOfDisintegratableBricks(grid, bricks));
+        System.out.printf("Total number of falling bricks: %s%n", determineNumberOfFallingBricks(grid, bricks));
+    }
+
+    private static int determineNumberOfFallingBricks(Grid3D<PointState> grid, List<Brick> bricks) {
+        return bricks.stream()
+                .sorted(Comparator.comparingInt(brick -> brick.getLowestPoint().z))
+                .map(brick -> determineNumberOfFallingBricks(grid, brick))
+                .reduce(0, Integer::sum);
+    }
+
+    private static int determineNumberOfFallingBricks(Grid3D<PointState> grid, Brick brick) {
+        Set<Brick> currentBricks = new HashSet<>(Set.of(brick));
+        Set<Brick> removedBricks = new HashSet<>(currentBricks);
+        while (!currentBricks.isEmpty()) {
+            Set<Brick> newBricks = currentBricks.stream()
+                    .map(cb -> cb.getBricksAbove(grid))
+                    .flatMap(Collection::stream).collect(Collectors.toSet())
+                    .stream().filter(brickAbove -> removedBricks.containsAll(brickAbove.getBricksBelow(grid)))
+                    .collect(Collectors.toSet());
+            removedBricks.addAll(newBricks);
+            currentBricks = newBricks;
+        }
+        var result = removedBricks.size() - 1;
+        System.out.printf("Removing brick %s results in number of falling bricks: %s%n", brick.getDescription(), result == 0 ? "-" : result);
+        return result;
+    }
+
+    private static long determineNumberOfDisintegratableBricks(Grid3D<PointState> grid, List<Brick> bricks) {
+        return bricks.stream().filter(brick -> {
             var bricksAbove = brick.getBricksAbove(grid);
             return bricksAbove.stream().allMatch(brickAbove -> (long) brickAbove.getBricksBelow(grid).size() > 1);
         }).count();
-        System.out.println();
-        System.out.println("Number of bricks that can safely be disintegrated: " + numberOfBricksDisintegratable);
     }
 
     private static void printBricksBelow(Grid3D<PointState> grid, List<Brick> bricks) {
         bricks.forEach(brick -> {
             var bricksBelow = brick.getBricksBelow(grid);
             var bricksBelowString = bricksBelow.isEmpty() ? "-" : bricksBelow.stream()
-                    .map(b -> String.valueOf(b.getId())).collect(Collectors.joining(", "));
-            System.out.printf("Brick %s is supported by: %s%n", brick.getId(), bricksBelowString);
+                    .map(b -> String.valueOf(b.getDescription())).collect(Collectors.joining(", "));
+            System.out.printf("Brick %s is supported by: %s%n", brick.getDescription(), bricksBelowString);
         });
+        System.out.println();
     }
 
     private static void printBricksAbove(Grid3D<PointState> grid, List<Brick> bricks) {
         bricks.forEach(brick -> {
             var bricksAbove = brick.getBricksAbove(grid);
             var bricksAboveString = bricksAbove.isEmpty() ? "-" : bricksAbove.stream()
-                    .map(b -> String.valueOf(b.getId())).collect(Collectors.joining(", "));
-            System.out.printf("Brick %s is supporting: %s%n", brick.getId(), bricksAboveString);
+                    .map(b -> String.valueOf(b.getDescription())).collect(Collectors.joining(", "));
+            System.out.printf("Brick %s is supporting: %s%n", brick.getDescription(), bricksAboveString);
         });
+        System.out.println();
     }
 
-    private static final Function<PointState, String> drawFunction = pointState -> String.valueOf(pointState.brick().getId());
+    private static final Function<PointState, String> drawFunction = pointState -> String.valueOf(pointState.brick().getDisplayCharacter());
 
     private static void drawGrid(Grid3D<PointState> grid) {
         grid.draw(X, Z, drawFunction);
@@ -80,14 +106,13 @@ public class Day22 {
     }
 
     private static List<Brick> parseBricks(List<String> lines) {
-        var id = new AtomicInteger(0);
+        AtomicInteger id = new AtomicInteger(1);
         return lines.stream().map(line -> {
             var points = Arrays.stream(line.split("~"))
                     .map(part -> part.split(","))
                     .map(coords -> new Point3i(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]), Integer.parseInt(coords[2])))
                     .toList();
-            char characterId = (char) ('A' + id.getAndIncrement());
-            return new Brick(characterId, points.get(0), points.get(1));
+            return new Brick(id.getAndIncrement(), points.get(0), points.get(1));
         }).toList();
     }
 

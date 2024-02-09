@@ -13,11 +13,11 @@ import java.util.stream.Collectors;
 @Getter
 public class Brick {
 
-    private final char id;
+    private final int id;
 
     private List<Point3i> points = new ArrayList<>();
 
-    public Brick(char id, Point3i start, Point3i end) {
+    public Brick(int id, Point3i start, Point3i end) {
         this.id = id;
         for (int x = start.x; x <= end.x; x++) {
             for (int y = start.y; y <= end.y; y++) {
@@ -26,6 +26,14 @@ public class Brick {
                 }
             }
         }
+    }
+
+    public String getDescription() {
+        return String.format("%s(%s)", getDisplayCharacter(), getId());
+    }
+
+    public char getDisplayCharacter() {
+        return (char) ('A' + (id % 26));
     }
 
     public List<Point3i> getPoints() {
