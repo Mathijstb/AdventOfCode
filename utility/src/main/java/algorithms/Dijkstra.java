@@ -9,9 +9,21 @@ public class Dijkstra {
     public record PathResult<T>(List<T> path, long cost) {
     }
 
+    public static <T> PathResult<T> calculateMaximalPath(T start, Predicate<T> goalCondition,
+                                                         Function<T, Long> getCost,
+                                                         Function<T, List<T>> getNeighbours) {
+        return calculatePath(start, goalCondition, getCost.andThen(x -> -x), getNeighbours, false);
+    }
+
     public static <T> PathResult<T> calculateMinimalPath(T start, Predicate<T> goalCondition,
                                                          Function<T, Long> getCost,
                                                          Function<T, List<T>> getNeighbours) {
+        return calculatePath(start, goalCondition, getCost, getNeighbours, true);
+    }
+
+    private static <T> PathResult<T> calculatePath(T start, Predicate<T> goalCondition,
+                                                   Function<T, Long> getCost,
+                                                   Function<T, List<T>> getNeighbours, boolean stopOnGoalCondition) {
         Map<T, Optional<T>> cameFrom = new HashMap<>();
         var costSoFar = new HashMap<T, Long>();
         costSoFar.put(start, 0L);
@@ -20,7 +32,7 @@ public class Dijkstra {
         while (!frontier.isEmpty()) {
             var current = frontier.remove();
             if (goalCondition.test(current)) {
-                break;
+                if (stopOnGoalCondition) { break; } else {continue; }
             }
             var neighbours = getNeighbours.apply(current);
             for (T next : neighbours) {
