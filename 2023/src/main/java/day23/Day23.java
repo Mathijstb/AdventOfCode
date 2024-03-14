@@ -6,7 +6,7 @@ import fileUtils.FileReader;
 import grids.FiniteGrid;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 public class Day23 {
@@ -23,6 +23,34 @@ public class Day23 {
         });
         grid.draw(p -> String.valueOf(p.character));
         System.out.printf("Maximal path length: %s%n", (result.path().size() - 1));
+
+        //part 2
+        System.out.println();
+        var grid2 = getGrid(lines);
+        var start = new Point(grid2.getRowPoints(0).stream()
+                .filter(point -> grid2.getValue(point).equals(PointType.PATH))
+                .findFirst().orElseThrow());
+        var finish = new Point(grid2.getRowPoints(grid2.getHeight() - 1).stream()
+                .filter(point -> grid2.getValue(point).equals(PointType.PATH))
+                .toList().getLast());
+        Set<Point> visited = new HashSet<>();
+        var maxLength = findLongestPathWithoutRevisiting(grid2, start, finish, visited, 0);
+        System.out.println("Longest path without revisiting: " + maxLength);
+    }
+
+    public static int findLongestPathWithoutRevisiting(FiniteGrid<PointType> grid, Point current, Point finish, Set<Point> visited, int length) {
+        visited.add(current);
+        if (current.equals(finish)) {
+            return length;
+        }
+        var neighbours = grid.getNeighbours(current, false, pointType -> !pointType.equals(PointType.FOREST))
+                .stream().filter(p -> !visited.contains(p)).toList();
+        if (neighbours.isEmpty()) {
+            return -1;
+        }
+        return neighbours.stream().map(neighbour ->
+            findLongestPathWithoutRevisiting(grid, neighbour, finish, new HashSet<>(visited), length + 1)
+        ).max(Comparator.comparingInt(a -> a)).orElseThrow();
     }
 
     private static Dijkstra.PathResult<PointAndFacing> findLongestPath(FiniteGrid<PointType> grid) {
