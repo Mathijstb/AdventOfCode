@@ -22,7 +22,7 @@ public class FiniteGrid<T> {
     private final List<List<T>> points = new ArrayList<>();
 
     public int getWidth() {
-        return points.get(0).size();
+        return points.getFirst().size();
     }
 
     public int getHeight() {
