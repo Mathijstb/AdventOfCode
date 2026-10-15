@@ -18,6 +18,7 @@ public class Day2 {
                     return new Range(Long.parseLong(parts[0]), Long.parseLong(parts[1]));
                 }).toList();
         System.out.println("Sum of invalid IDs: " + sumInvalidIds(ranges, repeats -> repeats == 2));
+        System.out.println("Sum of invalid IDs (new rules): " + sumInvalidIds(ranges, repeats -> repeats >= 2));
     }
 
     private static long sumInvalidIds(List<Range> ranges, IntPredicate allowedRepeats) {
