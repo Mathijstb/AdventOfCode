@@ -17,6 +17,16 @@ Fetch the personal input yourself; do not ask the user to download it.
 3. Save the input to `<year>/src/main/resources/inputN.csv`.
 4. Verify the saved file against the page (line count plus a hash computed in the browser) before using it.
 
+## Submitting answers
+
+Submit answers on `https://adventofcode.com/<year>/day/<N>` (browser pane, `level` 1 or 2 form) without asking, but only when sure:
+
+- The solution gives the expected result on every example in the puzzle text.
+- The answer is confirmed by an independent check (e.g. a brute-force or second implementation).
+- For part 2, the part 2 text has been read after part 1 was accepted, and the implementation matches it.
+
+If any of these fails, do not submit; report to the user instead. After submitting, read the response and report whether it was accepted.
+
 ## Branches and commits
 
 Each year has its own branch `feature/<year>` (branched from `master`, merged back via PR). One commit per step, short subject, no body:
